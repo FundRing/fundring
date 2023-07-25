@@ -1,4 +1,6 @@
 import type * as odd from '@oddjs/odd'
+import type { EthereumClient } from '@web3modal/ethereum'
+import type { Web3Modal } from '@web3modal/html'
 
 import { appName } from '$lib/app-info'
 
@@ -16,6 +18,8 @@ export type Session = {
   loading: boolean
   backupCreated: boolean
   error?: SessionError
+  ethereumClient: EthereumClient
+  web3modal: Web3Modal
 }
 
 type SessionError = 'Insecure Context' | 'Unsupported Browser'

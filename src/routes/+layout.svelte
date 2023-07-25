@@ -1,28 +1,27 @@
 <script lang="ts">
   import '../global.css'
-  import { addNotification } from '$lib/notifications'
+  // import { addNotification } from '$lib/notifications'
   import { appDescription, appImageURL, appName, appURL } from '$lib/app-info'
   import { sessionStore, themeStore } from '../stores'
-  import { errorToMessage } from '$lib/session'
-  import { initialize } from '$lib/init'
-  import Footer from '$components/Footer.svelte'
-  import FullScreenLoadingSpinner from '$components/common/FullScreenLoadingSpinner.svelte'
+  // import { errorToMessage } from '$lib/session'
+  // import { initialize } from '$lib/init'
+  // import FullScreenLoadingSpinner from '$components/common/FullScreenLoadingSpinner.svelte'
   import Header from '$components/Header.svelte'
   import Notifications from '$components/notifications/Notifications.svelte'
-  import SidebarNav from '$components/nav/SidebarNav.svelte'
+  import SessionProvider from '$components/auth/wallet-connect/SessionProvider.svelte'
 
-  sessionStore.subscribe(session => {
-    if (session.error) {
-      const message = errorToMessage(session.error)
-      addNotification(message, 'error')
-    }
-  })
+  // sessionStore.subscribe(session => {
+  //   if (session.error) {
+  //     const message = errorToMessage(session.error)
+  //     addNotification(message, 'error')
+  //   }
+  // })
 
-  const init = async () => {
-    await initialize()
-  }
+  // const init = async () => {
+  //   await initialize()
+  // }
 
-  init()
+  // init()
 </script>
 
 <svelte:head>
@@ -39,18 +38,20 @@
   <meta name="twitter:image:alt" content={appName} />
 </svelte:head>
 
-<div data-theme={$themeStore.selectedTheme} class="min-h-screen">
+<div
+  data-theme={$themeStore.selectedTheme}
+  class="min-h-screen pt-[86px] pb-10 bg-odd-yellow-200 text-odd-gray-500"
+>
   <Notifications />
 
-  {#if $sessionStore.loading}
-    <FullScreenLoadingSpinner />
-  {:else}
-    <SidebarNav>
-      <Header />
-      <div class="px-4">
-        <slot />
-      </div>
-    </SidebarNav>
-  {/if}
-  <Footer />
+  <SessionProvider>
+    <!-- {#if $sessionStore.loading}
+      <FullScreenLoadingSpinner /> -->
+    <!-- {:else} -->
+    <Header />
+    <div class="w-full max-w-[560px] mx-auto pt-[76px] px-10">
+      <slot />
+    </div>
+    <!-- {/if} -->
+  </SessionProvider>
 </div>

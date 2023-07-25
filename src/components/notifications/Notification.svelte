@@ -1,7 +1,6 @@
 <script lang="ts">
   import { fade, fly } from 'svelte/transition'
 
-  import { themeStore } from '../../stores'
   import type { Notification } from '$lib/notifications'
   import CheckThinIcon from '$components/icons/CheckThinIcon.svelte'
   import InfoThinIcon from '$components/icons/InfoThinIcon.svelte'
@@ -14,25 +13,25 @@
     info: {
       component: InfoThinIcon,
       props: {
-        color: '#1e3a8a'
+        color: '#6649F8'
       }
     },
     error: {
       component: XThinIcon,
       props: {
-        color: $themeStore.selectedTheme === 'light' ? '#ffd6d7' : '#fec3c3'
+        color: '#BE5366'
       }
     },
     success: {
       component: CheckThinIcon,
       props: {
-        color: '#14532D'
+        color: '#0F9162'
       }
     },
     warning: {
       component: WarningThinIcon,
       props: {
-        color: '#7c2d12'
+        color: '#DFC334'
       }
     }
   }
@@ -45,13 +44,14 @@
   aria-live="assertive"
   aria-atomic="true"
 >
-  <div class="alert alert-{notification.type} text-sm mb-3 peer-last:mb-0">
+  <div class="alert alert-{notification.type} text-body-sm mb-3 peer-last:mb-0">
     <div>
-      <svelte:component
+      <!-- <svelte:component
         this={iconMap[notification.type].component}
         {...iconMap[notification.type].props}
-      />
-      <span class="pl-1">{@html notification.msg}</span>
+      /> -->
+      <!-- <span class="pl-1">{@html notification.msg}</span> -->
+      <span>{@html notification.msg}</span>
     </div>
   </div>
 </div>

@@ -16,7 +16,9 @@ export const sessionStore: Writable<Session> = writable({
   authStrategy: null,
   program: null,
   loading: true,
-  backupCreated: null
+  backupCreated: null,
+  ethereumClient: null,
+  web3modal: null
 })
 
 export const filesystemStore: Writable<FileSystem | null> = writable(null)
