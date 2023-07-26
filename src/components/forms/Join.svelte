@@ -3,7 +3,6 @@
   export let step = { buttonLabel: '' }
 
   // Ensure the repo link is a valid git link
-
   const handleValidateRepoLink = event => {
     const repoLink = event.target.value
     const urlPattern = new RegExp(
@@ -28,7 +27,7 @@
       id="project_name"
       type="text"
       name="project_name"
-      class="h-[46px] px-2 font-light text-body-sm border-odd-gray-500 border focus-visible:outline focus-visible:outline-odd-gray-500 focus-visible:border-odd-gray-500"
+      class="h-[46px] px-2.5 font-light text-body-sm border-odd-gray-500 border focus-visible:outline focus-visible:outline-odd-gray-500 focus-visible:border-odd-gray-500"
       required
     />
   </div>
@@ -40,7 +39,7 @@
       id="repo_link"
       type="url"
       name="repo_link"
-      class="h-[46px] px-2 font-light text-body-sm border-odd-gray-500 border focus-visible:outline focus-visible:outline-odd-gray-500 focus-visible:border-odd-gray-500"
+      class="h-[46px] px-2.5 font-light text-body-sm border-odd-gray-500 border focus-visible:outline focus-visible:outline-odd-gray-500 focus-visible:border-odd-gray-500"
       required
       on:input={handleValidateRepoLink}
     />
@@ -53,7 +52,7 @@
       id="funding_goal"
       type="number"
       name="funding_goal"
-      class="h-[46px] px-2 font-light text-body-sm border-odd-gray-500 border focus-visible:outline focus-visible:outline-odd-gray-500 focus-visible:border-odd-gray-500"
+      class="h-[46px] px-2.5 font-light text-body-sm border-odd-gray-500 border focus-visible:outline focus-visible:outline-odd-gray-500 focus-visible:border-odd-gray-500"
       required
     />
   </div>

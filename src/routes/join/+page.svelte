@@ -6,6 +6,7 @@
   import { sessionStore } from '$src/stores'
   import { addNotification } from '$lib/notifications'
   import JoinForm from '$components/forms/Join.svelte'
+  import IntroBlurb from './components/IntroBlurb.svelte'
 
   let currentStep = 0
 
@@ -101,7 +102,10 @@
     const blob = await response.blob()
     const text = await blob.text()
 
-    if (text === $projectDetails.signature) {
+    if (
+      text.trim().toLowerCase() ===
+      $projectDetails.signature.trim().toLowerCase()
+    ) {
       addNotification('Your fundring file has been verified', 'success')
       currentStep = 4
     } else {
@@ -137,7 +141,10 @@
     },
     {
       title: 'Deploy The Contract',
-      buttonLabel: 'Verify Funding Proof'
+      html:
+        '<p class="mb-4">This step will:</p><ol class="pl-10 mb-4 list-decimal"><li class="mb-2"><strong>Deploy</strong> the Fund Ring contract for you</li><li class="mb-2"><strong>Initialize</strong> the funding goals you entered above</li><li class="mb-2"><strong>Announce</strong> your application to the Fund Ring network.</li></ol><p class="mb-8">Once it’s deployed, you’ll immediately be able to receive funding.</p>',
+      buttonLabel: 'I have deployed the contract',
+      buttonAction: () => (currentStep = 5)
     },
     {
       title: 'Embed The Funding Widget',
@@ -154,35 +161,10 @@
 
 <h1 class="mb-12">Join the Ring</h1>
 
-<p class="mb-4">
-  You’ll join once for each project that needs funding. It’s pretty quick, as
-  long as you have:
-</p>
-<ul class="list-disc pl-10 mb-12">
-  <li class="mb-2">
-    <strong>A fund wallet:</strong>
-    the Filecoin wallet you’re ready to accept funds at for the project. Using the
-    same wallet for multiple projects is okay!
-  </li>
-  <li class="mb-2">
-    <strong>A small amount of FIL:</strong>
-    to join the Fund Ring, you need to deploy a contract, which will incur network
-    fees.
-  </li>
-  <li class="mb-2">
-    <strong>Metamask Desktop or Brave Browser:</strong>
-    your wallet needs to be set up in one of these, in order to be able to connect
-    to the Fund Ring app.
-  </li>
-  <li>
-    <strong>Write access to your git repo:</strong>
-    if you don’t have write access to your repo, please forward this setup form to
-    someone who does. It also needs to be public, in order to qualify.
-  </li>
-</ul>
+<IntroBlurb />
 
 {#each steps as step, i}
-  <div class="mb-10">
+  <div id={`step${i + 1}`} class="mb-10">
     <h3 class="uppercase text-body-sm">
       Step {i + 1}
       {#if currentStep > i}<span class="pl-2 text-odd-green-500">
@@ -197,6 +179,10 @@
 
     {#if step.body}
       <p class="mb-8">{step.body}</p>
+    {/if}
+
+    {#if step.html}
+      {@html step.html}
     {/if}
 
     {#if step.buttonLabel && i !== 0}

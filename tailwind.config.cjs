@@ -60,6 +60,9 @@ module.exports = {
       aspectRatio: {
         '22/23': '22 / 23'
       },
+      boxShadow: {
+        'normal': '0px 0px 16px 0px rgba(0, 0, 0, 0.25)',
+      },
       colors: {
         'odd-gray': {
           100: '#E1E2EA',
@@ -112,6 +115,7 @@ module.exports = {
       fontSize: {
         'btn-sm': ['16px', { lineHeight: '17px' }],
         btn: ['20px', { lineHeight: '22px' }],
+        tag: ['13px', { lineHeight: '18px' }],
         'body-xs': ['12px', { lineHeight: '18px' }],
         'body-sm': ['16px', { lineHeight: '24px' }],
         'body-m': ['20px', { lineHeight: '30px' }],
