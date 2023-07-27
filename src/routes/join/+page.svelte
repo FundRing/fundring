@@ -1,7 +1,8 @@
 <script lang="ts">
+  import { signMessage } from '@wagmi/core'
+  import clipboardCopy from 'clipboard-copy'
   import { onDestroy } from 'svelte'
   import { writable } from 'svelte/store'
-  import { signMessage } from '@wagmi/core'
 
   import { sessionStore } from '$src/stores'
   import { addNotification } from '$lib/notifications'
@@ -34,8 +35,6 @@
       fundingGoal,
       frequency
     }))
-
-    console.log('$projectDetails', $projectDetails)
 
     currentStep = 1
   }
@@ -76,16 +75,20 @@
     }
   }
 
-  // Download fundring file with signed proof
-  const handleDownloadFundring = async () => {
-    const blob = new Blob([$projectDetails.signature], { type: 'octet/stream' })
-    const fileURL = URL.createObjectURL(blob)
+  // Copy fundring file with signed proof
+  const handleCopyFundringContents = async () => {
+    // const blob = new Blob([$projectDetails.signature], { type: 'octet/stream' })
+    // const fileURL = URL.createObjectURL(blob)
 
-    const downloadLink = document.createElement('a')
-    downloadLink.href = fileURL
-    downloadLink.download = '..fundring'
-    downloadLink.click()
-    URL.revokeObjectURL(fileURL)
+    // const downloadLink = document.createElement('a')
+    // downloadLink.href = fileURL
+    // downloadLink.download = '..fundring'
+    // downloadLink.click()
+    // URL.revokeObjectURL(fileURL)
+
+    await clipboardCopy($projectDetails.signature)
+
+    addNotification('.fundring contents copied to clipboard', 'success')
 
     currentStep = 3
   }
@@ -113,6 +116,14 @@
     }
   }
 
+  // Download generated contract
+  const handleDownloadContract = async () => {}
+
+  // Copy contract code
+  const handleCopyContract = async () => {
+    await clipboardCopy('contract')
+  }
+
   let steps = [
     {
       title: 'Provide Your Project Details',
@@ -128,14 +139,14 @@
     {
       title: 'Add The Funding Proof To Your Git Repo',
       body:
-        'To prove the connection between your project’s code and the funding wallet, please add a file called `fundring` to the root of your repository.',
-      buttonLabel: 'Download fundring',
-      buttonAction: handleDownloadFundring
+        'To prove the connection between your project’s code and the funding wallet, please add a file called `.fundring` to the root of your repository.',
+      buttonLabel: 'Copy .fundring Contents',
+      buttonAction: handleCopyFundringContents
     },
     {
       title: 'Verify Your Repo',
       body:
-        'Once you the fundring file containing your funding proof has been pushed to your repository, click the button below to verify it was added correctly.',
+        'Once the .fundring file containing your funding proof has been pushed to your repository, click the button below to verify it was added correctly.',
       buttonLabel: 'Verify Funding Proof',
       buttonAction: handleVerifyFundring
     },
@@ -143,8 +154,10 @@
       title: 'Deploy The Contract',
       html:
         '<p class="mb-4">This step will:</p><ol class="pl-10 mb-4 list-decimal"><li class="mb-2"><strong>Deploy</strong> the Fund Ring contract for you</li><li class="mb-2"><strong>Initialize</strong> the funding goals you entered above</li><li class="mb-2"><strong>Announce</strong> your application to the Fund Ring network.</li></ol><p class="mb-8">Once it’s deployed, you’ll immediately be able to receive funding.</p>',
-      buttonLabel: 'I have deployed the contract',
-      buttonAction: () => (currentStep = 5)
+      buttonLabel: 'Download Contract',
+      buttonAction: handleDownloadContract,
+      secondaryButtonLabel: 'Copy Contract',
+      secondaryButtonAction: handleCopyContract
     },
     {
       title: 'Embed The Funding Widget',
@@ -179,6 +192,15 @@
 
     {#if step.body}
       <p class="mb-8">{step.body}</p>
+    {/if}
+
+    <!-- Display .fundring contents -->
+    {#if i === 2 && currentStep >= 2}
+      <div
+        class="min-h-[48px] mb-8 p-2.5 border border-odd-gray-500 bg-odd-yellow-100 text-body-sm break-words"
+      >
+        {$projectDetails.signature}
+      </div>
     {/if}
 
     {#if step.html}

@@ -32,7 +32,8 @@
     <div class="relative mb-4">
       <input
         id="contribution_amount"
-        type="text"
+        type="number"
+        min="0"
         name="contribution_amount"
         class="h-[54px] w-full px-2.5 relative z-10 rounded-sm font-light text-body-sm border-odd-gray-500 border focus-visible:outline focus-visible:outline-odd-gray-500 focus-visible:border-odd-gray-500"
         required

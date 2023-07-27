@@ -51,6 +51,7 @@
     <input
       id="funding_goal"
       type="number"
+      min="0"
       name="funding_goal"
       class="h-[46px] px-2.5 font-light text-body-sm border-odd-gray-500 border focus-visible:outline focus-visible:outline-odd-gray-500 focus-visible:border-odd-gray-500"
       required
