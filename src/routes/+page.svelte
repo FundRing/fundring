@@ -33,9 +33,9 @@
 {/each}
 
 <a href="/try" class="btn btn-outline btn-primary w-full mb-4">Try it Out</a>
-<a href="/join" class="btn btn-outline btn-primary w-full mb-4">
+<!-- <a href="/join" class="btn btn-outline btn-primary w-full mb-4">
   Who’s using Fund Ring?
-</a>
+</a> -->
 <a href="/join" class="btn btn-primary w-full text-odd-yellow-100">
   Join the Ring
 </a>

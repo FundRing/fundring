@@ -26,6 +26,8 @@
     "paths": {
       "$components": ["src/components"],
       "$components/*": ["src/components/*"],
+			"$contracts": ["src/contracts"],
+			"$contracts/*": ["src/contracts/*"],
       "$lib": ["src/lib"],
       "$lib/*": ["src/lib/*"],
       "$routes": ["src/routes"],

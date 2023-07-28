@@ -7,6 +7,7 @@
   import { Web3Modal } from '@web3modal/html'
   import { configureChains, createConfig } from '@wagmi/core'
   import { filecoin, filecoinCalibration } from '@wagmi/core/chains'
+  import { ethers } from 'ethers'
 
   import { sessionStore } from '$src/stores'
   import FullScreenLoadingSpinner from '$components/common/FullScreenLoadingSpinner.svelte'
@@ -17,7 +18,7 @@
   const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])
 
   const wagmiConfig = createConfig({
-    autoConnect: false,
+    autoConnect: true,
     connectors: w3mConnectors({ projectId, chains }),
     publicClient
   })
@@ -25,12 +26,17 @@
   const web3modal = new Web3Modal({ projectId }, ethereumClient)
   web3modal.setDefaultChain(filecoinCalibration)
 
+  const provider = new ethers.providers.JsonRpcProvider(
+    ethereumClient.chains[1]?.rpcUrls.default.http[0]
+  )
+
   let loading = true
 
   sessionStore.update(state => ({
     ...state,
     ethereumClient,
-    web3modal
+    web3modal,
+    provider
   }))
 
   loading = false

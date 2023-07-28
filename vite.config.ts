@@ -10,6 +10,7 @@ const config = {
   resolve: {
     alias: {
       $components: resolve('./src/components'),
+      $contracts: resolve('./src/contracts'),
       $routes: resolve('./src/routes'),
       $src: resolve('./src'),
       $static: resolve('./static')

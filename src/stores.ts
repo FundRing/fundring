@@ -18,7 +18,8 @@ export const sessionStore: Writable<Session> = writable({
   loading: true,
   backupCreated: null,
   ethereumClient: null,
-  web3modal: null
+  web3modal: null,
+  provider: null
 })
 
 export const filesystemStore: Writable<FileSystem | null> = writable(null)

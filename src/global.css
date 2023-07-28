@@ -44,12 +44,20 @@ body, input {
   @apply font-sans text-body-m border-2;
 }
 
+.btn.btn-outline:hover {
+  @apply text-odd-yellow-100;
+}
+
 .btn[disabled] {
   @apply bg-odd-green-500 text-odd-yellow-100 opacity-50;
 }
 
 .btn[disabled].btn-outline {
   @apply bg-odd-yellow-200 text-odd-green-500 opacity-50;
+}
+
+.btn[disabled].form-btn {
+  @apply bg-odd-gray-500 text-odd-yellow-100 opacity-50;
 }
 
 /* Input default styles */

@@ -20,6 +20,7 @@ export type Session = {
   error?: SessionError
   ethereumClient: EthereumClient
   web3modal: Web3Modal
+  provider: any
 }
 
 type SessionError = 'Insecure Context' | 'Unsupported Browser'
