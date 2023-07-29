@@ -1,8 +1,8 @@
 <script lang="ts">
   import {
-    getContract,
+    // getContract,
     prepareWriteContract,
-    readContract,
+    // readContract,
     writeContract
   } from '@wagmi/core'
   import { ethers } from 'ethers'
@@ -12,6 +12,7 @@
   import BrandLogoSmall from '$components/icons/BrandLogoSmall.svelte'
   import { abi } from '$contracts/FundRingProject.sol/FundRingProject.json'
   import { sessionStore } from '$src/stores'
+  import { addNotification } from '$lib/notifications'
   import { CONTRACT_ADDRESS, checkStatusOfPendingTX } from '../lib/contract'
 
   const contract = new ethers.Contract(
@@ -31,7 +32,6 @@
 
     const totalFundsRaisedRaw = await contract.getTotalFundsRaised()
     totalFundsRaised = Number(ethers.utils.formatEther(totalFundsRaisedRaw))
-    console.log('totalFundsRaised', totalFundsRaised)
     const fundingGoalRaw = await contract.fundingGoal()
     fundingGoal = Number(ethers.utils.formatEther(fundingGoalRaw))
 
@@ -59,12 +59,13 @@
       // Contract state seems to need some extra time to after receipt is fetched(will investigate further)
       setTimeout(async () => {
         await fetchContractData()
-      }, 5000)
+        loading = false
+      }, 10000)
     } catch (error) {
       console.error(error)
+      addNotification('Transaction failed', 'error')
+      loading = false
     }
-
-    loading = false
   }
 
   onMount(async () => {

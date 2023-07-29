@@ -1,11 +1,16 @@
 <script lang="ts">
-  import { signMessage } from '@wagmi/core'
+  import { getWalletClient, signMessage } from '@wagmi/core'
   import clipboardCopy from 'clipboard-copy'
   import { onDestroy } from 'svelte'
   import { writable } from 'svelte/store'
+  import { parseEther } from 'viem'
+  import { filecoinCalibration } from 'viem/chains'
 
   import { sessionStore } from '$src/stores'
   import { addNotification } from '$lib/notifications'
+  import { checkStatusOfPendingTX } from '$routes/try/lib/contract'
+  import { abi } from '$contracts/FundRingProject.sol/FundRingProject.json'
+  import { CONTRACT_BYTECODE } from './lib/bytecode'
   import JoinForm from '$components/forms/Join.svelte'
   import IntroBlurb from './components/IntroBlurb.svelte'
 
@@ -35,7 +40,7 @@
       fundingGoal,
       frequency
     }))
-
+    addNotification('Details submitted', 'success')
     currentStep = 1
   }
 
@@ -64,6 +69,7 @@
           ...state,
           signature
         }))
+        addNotification('Signature successful', 'success')
         currentStep = 2
       } else {
         await $sessionStore.web3modal.openModal({
@@ -100,7 +106,7 @@
       .split('github.com')[1]
       .split('.git')[0]
     const response = await fetch(
-      `https://raw.githubusercontent.com${repoPath}/main/fundring`
+      `https://raw.githubusercontent.com${repoPath}/main/.fundring`
     )
     const blob = await response.blob()
     const text = await blob.text()
@@ -116,12 +122,43 @@
     }
   }
 
-  // Download generated contract
-  const handleDownloadContract = async () => {}
+  // Deploy generated contract with form values
+  let loading = false
+  let deployedAddress
+  const handleDeployContract = async () => {
+    loading = true
+    try {
+      const client = await getWalletClient()
+      const hash = await client.deployContract({
+        abi,
+        bytecode: CONTRACT_BYTECODE,
+        args: [
+          $projectDetails.name,
+          $projectDetails.repoLink,
+          parseEther($projectDetails.fundingGoal),
+          $projectDetails.frequency
+        ],
+        chain: filecoinCalibration
+      })
 
-  // Copy contract code
-  const handleCopyContract = async () => {
-    await clipboardCopy('contract')
+      const receipt = await checkStatusOfPendingTX(hash)
+
+      loading = false
+      deployedAddress = receipt.contractAddress
+
+      addNotification(
+        // @ts-ignore-next-line
+        `Deployment to ${receipt.contractAddress}`,
+        'success',
+        10000
+      )
+
+      currentStep = 5
+    } catch (error) {
+      console.error(error)
+      addNotification('Deployment failed', 'error')
+      loading = false
+    }
   }
 
   let steps = [
@@ -154,15 +191,15 @@
       title: 'Deploy The Contract',
       html:
         '<p class="mb-4">This step will:</p><ol class="pl-10 mb-4 list-decimal"><li class="mb-2"><strong>Deploy</strong> the Fund Ring contract for you</li><li class="mb-2"><strong>Initialize</strong> the funding goals you entered above</li><li class="mb-2"><strong>Announce</strong> your application to the Fund Ring network.</li></ol><p class="mb-8">Once it’s deployed, you’ll immediately be able to receive funding.</p>',
-      buttonLabel: 'Download Contract',
-      buttonAction: handleDownloadContract,
-      secondaryButtonLabel: 'Copy Contract',
-      secondaryButtonAction: handleCopyContract
+      buttonLabel: 'Deploy Contract',
+      buttonAction: handleDeployContract
     },
     {
       title: 'Embed The Funding Widget',
       body:
         'Now that your contract is deployed, copy the code below to embed a funding widget directly into your project page.',
+      html:
+        '<div class="flex items-center justify-center h-[231px] mb-4 px-7 border border-odd-gray-500 bg-odd-yellow-100 break-words" ><p class="uppercase font-sans text-odd-blue-500 text-heading-xl text-center">Coming Soon</p></div>',
       buttonLabel: 'Copy to Clipboard'
     }
   ]
@@ -207,16 +244,34 @@
       {@html step.html}
     {/if}
 
+    {#if deployedAddress && i === 4}
+      <p class="mb-4">Contract deployed to:</p>
+      <div
+        class="min-h-[48px] mb-8 p-2.5 border border-odd-gray-500 bg-odd-yellow-100 text-body-sm break-words"
+      >
+        {deployedAddress}
+      </div>
+    {/if}
+
     {#if step.buttonLabel && i !== 0}
       <button
-        on:click={step.buttonAction ?? (() => {})}
-        disabled={currentStep < i}
-        class="btn btn-primary {i === 5
+        on:click={i === 4 && deployedAddress
+          ? async () => {
+              await clipboardCopy(deployedAddress)
+              addNotification('Copied to clipboard', 'success')
+            }
+          : step.buttonAction}
+        disabled={currentStep < i || i === 5 || (i === 4 && loading)}
+        class="btn btn-primary {i === 5 || (i === 4 && deployedAddress)
           ? 'btn-outline'
           : ''} w-full text-odd-yellow-100"
       >
         {#if i === 1}
           {connectButtonText}
+        {:else if i === 4 && loading}
+          processing
+        {:else if i === 4 && deployedAddress}
+          Copy to Clipboard
         {:else}
           {step.buttonLabel}
         {/if}

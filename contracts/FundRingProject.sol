@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract FundRingProject {
+import './IFundRingProject.sol';
+
+contract FundRingProject is IFundRingProject {
   string public projectName;
   string public githubRepoLink;
   uint256 public fundingGoal;
@@ -15,26 +17,26 @@ contract FundRingProject {
   uint256 private lastMonth;
   uint256 private lastYear;
 
-  event ProjectDeployed(
+  event FundRingProjectDeployed(
     address indexed owner,
     string projectName,
     string githubRepoLink,
     uint256 fundingGoal,
     string fundingFrequency
   );
-  event FundsContributed(
+  event FundRingFundsContributed(
     address indexed contributor,
     uint256 amountContributed,
     uint256 totalFundsRaised
   );
-  event FundingGoalReached(uint256 totalFundsRaised);
+  event FundRingFundingGoalReached(uint256 totalFundsRaised);
 
-  constructor() {
-    string memory _projectName = 'Fund Ring';
-    string memory _githubRepoLink = 'https://github.com/oddsdk/fundring.git';
-    uint256 _fundingGoal = 300000000000000000000;
-    string memory _fundingFrequency = 'monthly';
-
+  constructor(
+    string memory _projectName,
+    string memory _githubRepoLink,
+    uint256 _fundingGoal,
+    string memory _fundingFrequency
+  ) {
     require(bytes(_projectName).length > 0, 'Project name cannot be empty.');
     require(
       bytes(_githubRepoLink).length > 0,
@@ -56,7 +58,7 @@ contract FundRingProject {
     lastMonth = getCurrentMonth();
     lastYear = getCurrentYear();
 
-    emit ProjectDeployed(
+    emit FundRingProjectDeployed(
       msg.sender,
       _projectName,
       _githubRepoLink,
@@ -73,7 +75,7 @@ contract FundRingProject {
       keccak256(abi.encodePacked((b))));
   }
 
-  function contributeFunds() external payable {
+  function contributeFunds() external payable override {
     require(msg.value > 0, 'You must send some ether to contribute.');
 
     totalFundsRaised += msg.value;
@@ -85,10 +87,10 @@ contract FundRingProject {
       updateYearlyFunds(msg.value);
     }
 
-    emit FundsContributed(msg.sender, msg.value, totalFundsRaised);
+    emit FundRingFundsContributed(msg.sender, msg.value, totalFundsRaised);
 
     if (isFundingComplete()) {
-      emit FundingGoalReached(totalFundsRaised);
+      emit FundRingFundingGoalReached(totalFundsRaised);
     }
   }
 
@@ -120,7 +122,7 @@ contract FundRingProject {
     return (block.timestamp / 1 days) / 365;
   }
 
-  function isFundingComplete() public view returns (bool) {
+  function isFundingComplete() public view override returns (bool) {
     if (compareStrings(fundingFrequency, 'monthly')) {
       uint256 currentMonth = getCurrentMonth();
       return fundsRaisedByMonth[currentMonth] >= fundingGoal;
@@ -132,17 +134,15 @@ contract FundRingProject {
     }
   }
 
-  // Getter method to return the totalFundsRaised
-  function getTotalFundsRaised() public view returns (uint256) {
+  function getTotalFundsRaised() public view override returns (uint256) {
     return totalFundsRaised;
   }
 
-  // Getter method to return the fundingFrequency
-  function getFundingFrequency() public view returns (string memory) {
+  function getFundingFrequency() public view override returns (string memory) {
     return fundingFrequency;
   }
 
-  function withdrawFunds() external {
+  function withdrawFunds() external override {
     require(
       msg.sender == projectOwner,
       'Only the project owner can withdraw funds.'
