@@ -42,6 +42,7 @@
     }))
     addNotification('Details submitted', 'success')
     currentStep = 1
+    document.getElementById('step2').scrollIntoView({ behavior: 'smooth' })
   }
 
   // Connect via WalletConnect
@@ -51,10 +52,12 @@
     : 'Connect Your Wallet'
   const unsubscribeEvents = $sessionStore.web3modal.subscribeEvents(
     newState => {
-      connectButtonText =
-        newState.name === 'ACCOUNT_CONNECTED'
-          ? 'Sign Proof'
-          : 'Connect Your Wallet'
+      if (newState.name === 'ACCOUNT_CONNECTED') {
+        connectButtonText = 'Sign Proof'
+        document.getElementById('step2').scrollIntoView({ behavior: 'smooth' })
+      } else {
+        connectButtonText = 'Connect Your Wallet'
+      }
     }
   )
 
@@ -72,6 +75,7 @@
         }))
         addNotification('Signature successful', 'success')
         currentStep = 2
+        document.getElementById('step3').scrollIntoView({ behavior: 'smooth' })
       } else {
         await $sessionStore.web3modal.openModal({
           route: 'ConnectWallet'
@@ -98,6 +102,7 @@
     addNotification('.fundring contents copied to clipboard', 'success')
 
     currentStep = 3
+    document.getElementById('step4').scrollIntoView({ behavior: 'smooth' })
   }
 
   // Verify fundring file is in repo
@@ -118,6 +123,7 @@
     ) {
       addNotification('Your fundring file has been verified', 'success')
       currentStep = 4
+      document.getElementById('step5').scrollIntoView({ behavior: 'smooth' })
     } else {
       addNotification('Your fundring file could not be verified', 'error')
     }
@@ -215,7 +221,7 @@
 <IntroBlurb />
 
 {#each steps as step, i}
-  <div id={`step${i + 1}`} class="mb-10">
+  <div id={`step${i + 1}`} class={i !== 0 ? 'pt-10' : ''}>
     <h3 class="uppercase text-body-sm">
       Step {i + 1}
       {#if currentStep > i}<span class="pl-2 text-odd-green-500">
