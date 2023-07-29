@@ -57,6 +57,7 @@
           : 'Connect Your Wallet'
     }
   )
+
   // Either connect the user's wallet client or sign the proof
   const handleConnectOrSign = async () => {
     try {
