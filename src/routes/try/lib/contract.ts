@@ -47,7 +47,7 @@ export const initContractEvents = async () => {
 /**
  * Poll for the tx receipt
  */
-export const checkStatusOfPendingTX = async (txHash: string): Promise<void> => {
+export const checkStatusOfPendingTX = async (txHash: string): Promise<{ contractAddress: string }> => {
   let receipt = null
   while (receipt === null) {
     try {

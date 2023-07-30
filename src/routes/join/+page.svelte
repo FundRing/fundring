@@ -5,8 +5,10 @@
   import { writable } from 'svelte/store'
   import { parseEther } from 'viem'
   import { filecoinCalibration } from 'viem/chains'
+  import { Web3Storage } from 'web3.storage'
 
   import { sessionStore } from '$src/stores'
+  import { slugify } from '$lib/utils'
   import { addNotification } from '$lib/notifications'
   import { checkStatusOfPendingTX } from '$routes/try/lib/contract'
   import { abi } from '$contracts/FundRingProject.sol/FundRingProject.json'
@@ -16,6 +18,13 @@
 
   let currentStep = 0
 
+  // Create web3 storage client
+  const web3StorageClient = new Web3Storage({
+    token:
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGVBMTM1NkU5ZDQ1NDU0YTg0MzAwRDZiMzQ3MTFBNzcwNTk1OUE3ZjEiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2OTA3NDEyNTE1ODEsIm5hbWUiOiJGdW5kUmluZyJ9.9wsqAo9P573OV-V-lifmd2aHRm5eqog6kPRSAKAMDwE'
+  })
+
+  // Create store to save project details
   const projectDetails = writable({
     name: null,
     repoLink: null,
@@ -107,7 +116,6 @@
 
   // Verify fundring file is in repo
   const handleVerifyFundring = async () => {
-    console.log('verify fundring')
     const repoPath = $projectDetails.repoLink
       .split('github.com')[1]
       .split('.git')[0]
@@ -154,13 +162,35 @@
       deployedAddress = receipt.contractAddress
 
       addNotification(
-        // @ts-ignore-next-line
         `Deployment to ${receipt.contractAddress}`,
         'success',
         10000
       )
 
       currentStep = 5
+
+      const slug = slugify($projectDetails.name)
+
+      const file = new File(
+        [
+          JSON.stringify({
+            name: $projectDetails.name,
+            repoLink: $projectDetails.repoLink,
+            fundingGoal: $projectDetails.fundingGoal,
+            frequency: $projectDetails.frequency
+          })
+        ],
+        `${slug}.json`,
+        {
+          type: 'application/json'
+        }
+      )
+
+      // @ts-ignore-next-line
+      const rootCid = await web3StorageClient.put([file], {
+        name: `${slug}.json`,
+        maxRetries: 5
+      })
     } catch (error) {
       console.error(error)
       addNotification('Deployment failed', 'error')
@@ -283,6 +313,17 @@
           {step.buttonLabel}
         {/if}
       </button>
+    {/if}
+
+    {#if i === 4 && deployedAddress}
+      <a
+        href={`https://calibration.filfox.info/en/address/${deployedAddress}`}
+        target="_blank"
+        rel="noreferrer"
+        class="btn btn-primary w-full mt-4 text-odd-yellow-100"
+      >
+        View on Filfox
+      </a>
     {/if}
   </div>
 {/each}
