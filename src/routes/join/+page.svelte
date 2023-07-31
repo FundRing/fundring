@@ -162,7 +162,7 @@
       deployedAddress = receipt.contractAddress
 
       addNotification(
-        `Deployment to ${receipt.contractAddress}`,
+        `Deployed to ${receipt.contractAddress}`,
         'success',
         10000
       )
