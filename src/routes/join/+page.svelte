@@ -177,7 +177,8 @@
             name: $projectDetails.name,
             repoLink: $projectDetails.repoLink,
             fundingGoal: $projectDetails.fundingGoal,
-            frequency: $projectDetails.frequency
+            frequency: $projectDetails.frequency,
+            deployedAddress
           })
         ],
         `${slug}.json`,
@@ -187,7 +188,7 @@
       )
 
       // @ts-ignore-next-line
-      const rootCid = await web3StorageClient.put([file], {
+      await web3StorageClient.put([file], {
         name: `${slug}.json`,
         maxRetries: 5
       })
