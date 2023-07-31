@@ -32,7 +32,9 @@
   </div>
 {/each}
 
-<a href="/try" class="btn btn-outline btn-primary w-full mb-4">Try it Out</a>
+<a href="/fund" class="btn btn-outline btn-primary w-full mb-4">
+  Fund the Ring
+</a>
 <!-- <a href="/join" class="btn btn-outline btn-primary w-full mb-4">
   Who’s using Fund Ring?
 </a> -->

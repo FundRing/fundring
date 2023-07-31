@@ -10,7 +10,7 @@
   import { sessionStore } from '$src/stores'
   import { slugify } from '$lib/utils'
   import { addNotification } from '$lib/notifications'
-  import { checkStatusOfPendingTX } from '$routes/try/lib/contract'
+  import { checkStatusOfPendingTX } from '$routes/fund/lib/contract'
   import { abi } from '$contracts/FundRingProject.sol/FundRingProject.json'
   import { CONTRACT_BYTECODE } from './lib/bytecode'
   import JoinForm from '$components/forms/Join.svelte'

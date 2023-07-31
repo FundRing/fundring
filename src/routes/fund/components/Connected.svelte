@@ -73,7 +73,7 @@
   })
 </script>
 
-<h1 class="mb-12">Try it Out</h1>
+<h1 class="mb-12">Fund the Ring</h1>
 
 <div
   class="w-full pt-10 px-8 pb-6 mb-10 border border-odd-gray-500 rounded-sm shadow-normal"
