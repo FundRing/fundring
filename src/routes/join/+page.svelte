@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { getWalletClient, signMessage } from '@wagmi/core'
+  import {
+    getNetwork,
+    getWalletClient,
+    signMessage,
+    switchNetwork
+  } from '@wagmi/core'
   import clipboardCopy from 'clipboard-copy'
   import { onDestroy } from 'svelte'
   import { writable } from 'svelte/store'
@@ -10,7 +15,10 @@
   import { sessionStore } from '$src/stores'
   import { slugify } from '$lib/utils'
   import { addNotification } from '$lib/notifications'
-  import { checkStatusOfPendingTX } from '$routes/fund/lib/contract'
+  import {
+    NETWORK_MAP,
+    checkStatusOfPendingTX
+  } from '$routes/fund/lib/contract'
   import { abi } from '$contracts/FundRingProject.sol/FundRingProject.json'
   import { CONTRACT_BYTECODE } from './lib/bytecode'
   import JoinForm from '$components/forms/Join.svelte'
@@ -143,6 +151,21 @@
   const handleDeployContract = async () => {
     loading = true
     try {
+      const { chain } = getNetwork()
+
+      // Prompt the user to switch networks if they are not on Calibration
+      if (chain.id !== Number(NETWORK_MAP.testnet.chainId)) {
+        try {
+          const network = await switchNetwork({
+            chainId: Number(NETWORK_MAP.testnet.chainId)
+          })
+          console.log('network', network)
+        } catch (error) {
+          console.error(error)
+          console.log('could not programmitically switch network')
+        }
+      }
+
       const client = await getWalletClient()
       const hash = await client.deployContract({
         abi,

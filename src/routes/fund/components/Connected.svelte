@@ -1,19 +1,25 @@
+<!-- <svelte:options tag="funding-widget" /> -->
 <script lang="ts">
   import {
-    // getContract,
+    getNetwork,
     prepareWriteContract,
-    // readContract,
+    switchNetwork,
+    watchContractEvent,
     writeContract
   } from '@wagmi/core'
-  import { ethers } from 'ethers'
-  import { onMount } from 'svelte'
+  import { ethers, utils } from 'ethers'
+  import { onDestroy, onMount } from 'svelte'
   import { parseEther } from 'viem'
 
   import BrandLogoSmall from '$components/icons/BrandLogoSmall.svelte'
   import { abi } from '$contracts/FundRingProject.sol/FundRingProject.json'
   import { sessionStore } from '$src/stores'
   import { addNotification } from '$lib/notifications'
-  import { CONTRACT_ADDRESS, checkStatusOfPendingTX } from '../lib/contract'
+  import {
+    CONTRACT_ADDRESS,
+    NETWORK_MAP,
+    checkStatusOfPendingTX
+  } from '../lib/contract'
 
   const contract = new ethers.Contract(
     CONTRACT_ADDRESS,
@@ -26,18 +32,6 @@
   let fundingGoal = 0
   let totalFundsRaised = 0
 
-  // Fetch current contract data
-  const fetchContractData = async () => {
-    fetchingData = true
-
-    const totalFundsRaisedRaw = await contract.getTotalFundsRaised()
-    totalFundsRaised = Number(ethers.utils.formatEther(totalFundsRaisedRaw))
-    const fundingGoalRaw = await contract.fundingGoal()
-    fundingGoal = Number(ethers.utils.formatEther(fundingGoalRaw))
-
-    fetchingData = false
-  }
-
   // Submit the users FIL contribution to the Fund Ring contract
   const handleContributeSubmit = async (event: SubmitEvent) => {
     loading = true
@@ -45,6 +39,20 @@
     try {
       const formData = new FormData(event.target as HTMLFormElement)
       const contributionAmount = String(formData.get('contribution_amount'))
+      const { chain } = getNetwork()
+
+      // Prompt the user to switch networks if they are not on Calibration
+      if (chain.id !== Number(NETWORK_MAP.testnet.chainId)) {
+        try {
+          const network = await switchNetwork({
+            chainId: Number(NETWORK_MAP.testnet.chainId)
+          })
+          console.log('network', network)
+        } catch (error) {
+          console.error(error)
+          console.log('could not programmitcally switch network')
+        }
+      }
 
       const request = await prepareWriteContract({
         address: CONTRACT_ADDRESS,
@@ -56,11 +64,10 @@
 
       await checkStatusOfPendingTX(hash)
 
-      // Contract state seems to need some extra time to after receipt is fetched(will investigate further)
-      setTimeout(async () => {
-        await fetchContractData()
-        loading = false
-      }, 10000)
+      const totalFundsRaisedRaw = await contract.getTotalFundsRaised()
+      totalFundsRaised = Number(ethers.utils.formatEther(totalFundsRaisedRaw))
+
+      loading = false
     } catch (error) {
       console.error(error)
       addNotification('Transaction failed', 'error')
@@ -68,8 +75,30 @@
     }
   }
 
+  // Listen for contribution events on contract and update amounts if there is network latency
+  contract.on('FundRingFundsContributed', (_p1, _p2, _totalFundsRaised) => {
+    if (
+      Number(ethers.utils.formatEther(_totalFundsRaised)) > totalFundsRaised
+    ) {
+      fetchingData = true
+      totalFundsRaised = Number(ethers.utils.formatEther(_totalFundsRaised))
+      fetchingData = false
+    }
+  })
+
   onMount(async () => {
-    await fetchContractData()
+    fetchingData = true
+
+    const totalFundsRaisedRaw = await contract.getTotalFundsRaised()
+    totalFundsRaised = Number(ethers.utils.formatEther(totalFundsRaisedRaw))
+    const fundingGoalRaw = await contract.fundingGoal()
+    fundingGoal = Number(ethers.utils.formatEther(fundingGoalRaw))
+
+    fetchingData = false
+  })
+
+  onDestroy(async () => {
+    // unwatch()
   })
 </script>
 
@@ -84,15 +113,14 @@
     consider supporting our funding goal. Every little bit helps.
   </p>
 
-  {#if fetchingData}
-    <h3 class="mb-1">Fetching current stats...</h3>
-  {:else}
-    <h3 class="mb-1">How much can you help?</h3>
-    <p class="mb-4 text-body-sm">
-      Our goal this month is {fundingGoal}FIL. We need another {fundingGoal -
-        totalFundsRaised}FIL to hit it.
-    </p>
-  {/if}
+  <h3 class="mb-1">How much can you help?</h3>
+  <p class="mb-4 text-body-sm">
+    Our goal this month is {#if fetchingData}<div
+        class="inline-block w-5 h-4 ml-1 translate-y-[2px] bg-odd-gray-100 rounded-sm animate-pulse"
+      />{:else}{fundingGoal}{/if}FIL. We need another {#if fetchingData}<div
+        class="inline-block w-5 h-4 ml-1 translate-y-[2px] bg-odd-gray-100 rounded-sm animate-pulse"
+      />{:else}{fundingGoal - totalFundsRaised}{/if}FIL to hit it.
+  </p>
 
   <div class="mb-4" />
 

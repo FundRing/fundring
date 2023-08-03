@@ -114,11 +114,11 @@ contract FundRingProject is IFundRingProject {
     }
   }
 
-  function getCurrentMonth() private view returns (uint256) {
-    return ((block.timestamp / 1 days) % 30) + 1;
+  function getCurrentMonth() public view returns (uint256) {
+    return (block.timestamp / 1 days) / 30;
   }
 
-  function getCurrentYear() private view returns (uint256) {
+  function getCurrentYear() public view returns (uint256) {
     return (block.timestamp / 1 days) / 365;
   }
 
@@ -134,12 +134,20 @@ contract FundRingProject is IFundRingProject {
     }
   }
 
+  function getFundingFrequency() public view override returns (string memory) {
+    return fundingFrequency;
+  }
+
   function getTotalFundsRaised() public view override returns (uint256) {
     return totalFundsRaised;
   }
 
-  function getFundingFrequency() public view override returns (string memory) {
-    return fundingFrequency;
+  function getFundsRaisedByMonth(uint256 month) public view returns (uint256) {
+    return fundsRaisedByMonth[month];
+  }
+
+  function getFundsRaisedByYear(uint256 year) public view returns (uint256) {
+    return fundsRaisedByYear[year];
   }
 
   function withdrawFunds() external override {
