@@ -7,6 +7,7 @@
     watchContractEvent,
     writeContract
   } from '@wagmi/core'
+  import { dev } from '$app/environment'
   import { ethers, utils } from 'ethers'
   import { onDestroy, onMount } from 'svelte'
   import { parseEther } from 'viem'
@@ -98,7 +99,12 @@
   })
 
   onDestroy(async () => {
-    // unwatch()
+    // Stop listening for events on contract
+    contract.off('FundRingFundsContributed', () => {
+      if (dev) {
+        console.log('unsubscribed from contract events')
+      }
+    })
   })
 </script>
 

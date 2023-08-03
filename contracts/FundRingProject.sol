@@ -115,7 +115,7 @@ contract FundRingProject is IFundRingProject {
   }
 
   function getCurrentMonth() public view returns (uint256) {
-    return (block.timestamp / 1 days) / 30;
+    return ((block.timestamp / 1 days) % 12) + 1;
   }
 
   function getCurrentYear() public view returns (uint256) {
