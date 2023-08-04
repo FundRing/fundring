@@ -23,8 +23,9 @@
   import { CONTRACT_BYTECODE } from './lib/bytecode'
   import JoinForm from '$components/forms/Join.svelte'
   import IntroBlurb from './components/IntroBlurb.svelte'
+  import Step from './components/Step.svelte'
 
-  let currentStep = 0
+  let currentStep = 1
 
   // Create web3 storage client
   const web3StorageClient = new Web3Storage({
@@ -38,7 +39,8 @@
     repoLink: null,
     fundingGoal: null,
     frequency: null,
-    signature: null
+    signature: null,
+    slug: null
   })
 
   // Save the `projectDetails` to the store and increment the `currentStep`
@@ -55,10 +57,11 @@
       name: projectName,
       repoLink,
       fundingGoal,
-      frequency
+      frequency,
+      slug: slugify(projectName as string)
     }))
     addNotification('Details submitted', 'success')
-    currentStep = 1
+    currentStep = 2
     document.getElementById('step2').scrollIntoView({ behavior: 'smooth' })
   }
 
@@ -84,14 +87,14 @@
       account = $sessionStore.ethereumClient.getAccount()
       if (account.isConnected) {
         const signature = await signMessage({
-          message: 'Create my .fundring proof'
+          message: `Create my ${$projectDetails.slug}.fundring proof`
         })
         projectDetails.update(state => ({
           ...state,
           signature
         }))
         addNotification('Signature successful', 'success')
-        currentStep = 2
+        currentStep = 3
         document.getElementById('step3').scrollIntoView({ behavior: 'smooth' })
       } else {
         await $sessionStore.web3modal.openModal({
@@ -105,20 +108,16 @@
 
   // Copy fundring file with signed proof
   const handleCopyFundringContents = async () => {
-    // const blob = new Blob([$projectDetails.signature], { type: 'octet/stream' })
-    // const fileURL = URL.createObjectURL(blob)
+    const blob = new Blob([$projectDetails.signature], { type: 'octet/stream' })
+    const fileURL = URL.createObjectURL(blob)
 
-    // const downloadLink = document.createElement('a')
-    // downloadLink.href = fileURL
-    // downloadLink.download = '..fundring'
-    // downloadLink.click()
-    // URL.revokeObjectURL(fileURL)
+    const downloadLink = document.createElement('a')
+    downloadLink.href = fileURL
+    downloadLink.download = `${$projectDetails.slug}.fundring`
+    downloadLink.click()
+    URL.revokeObjectURL(fileURL)
 
-    await clipboardCopy($projectDetails.signature)
-
-    addNotification('.fundring contents copied to clipboard', 'success')
-
-    currentStep = 3
+    currentStep = 4
     document.getElementById('step4').scrollIntoView({ behavior: 'smooth' })
   }
 
@@ -128,7 +127,7 @@
       .split('github.com')[1]
       .split('.git')[0]
     const response = await fetch(
-      `https://raw.githubusercontent.com${repoPath}/main/.fundring`
+      `https://raw.githubusercontent.com${repoPath}/main/${$projectDetails.slug}.fundring`
     )
     const blob = await response.blob()
     const text = await blob.text()
@@ -137,11 +136,17 @@
       text.trim().toLowerCase() ===
       $projectDetails.signature.trim().toLowerCase()
     ) {
-      addNotification('Your fundring file has been verified', 'success')
-      currentStep = 4
+      addNotification(
+        `Your ${$projectDetails.slug}.fundring file has been verified`,
+        'success'
+      )
+      currentStep = 5
       document.getElementById('step5').scrollIntoView({ behavior: 'smooth' })
     } else {
-      addNotification('Your fundring file could not be verified', 'error')
+      addNotification(
+        `Your ${$projectDetails.slug}.fundring file could not be verified`,
+        'error'
+      )
     }
   }
 
@@ -159,7 +164,6 @@
           const network = await switchNetwork({
             chainId: Number(NETWORK_MAP.testnet.chainId)
           })
-          console.log('network', network)
         } catch (error) {
           console.error(error)
           console.log('could not programmitically switch network')
@@ -190,9 +194,7 @@
         10000
       )
 
-      currentStep = 5
-
-      const slug = slugify($projectDetails.name)
+      currentStep = 6
 
       const file = new File(
         [
@@ -201,10 +203,11 @@
             repoLink: $projectDetails.repoLink,
             fundingGoal: $projectDetails.fundingGoal,
             frequency: $projectDetails.frequency,
+            slug: $projectDetails.slug,
             deployedAddress
           })
         ],
-        `${slug}.json`,
+        `${$projectDetails.slug}.json`,
         {
           type: 'application/json'
         }
@@ -212,7 +215,7 @@
 
       // @ts-ignore-next-line
       await web3StorageClient.put([file], {
-        name: `${slug}.json`,
+        name: `${$projectDetails.slug}.json`,
         maxRetries: 5
       })
     } catch (error) {
@@ -221,49 +224,6 @@
       loading = false
     }
   }
-
-  let steps = [
-    {
-      title: 'Provide Your Project Details',
-      buttonLabel: 'Submit Details'
-    },
-    {
-      title: 'Sign A Funding Proof',
-      body:
-        'Connect your fund wallet to sign a Fund Proof. We’ll use this signed message to verify the connection between the fund wallet',
-      buttonLabel: account.isConnected ? 'Sign Proof' : 'Connect Your Wallet',
-      buttonAction: handleConnectOrSign
-    },
-    {
-      title: 'Add The Funding Proof To Your Git Repo',
-      body:
-        'To prove the connection between your project’s code and the funding wallet, please add a file called `.fundring` to the root of your repository.',
-      buttonLabel: 'Copy .fundring Contents',
-      buttonAction: handleCopyFundringContents
-    },
-    {
-      title: 'Verify Your Repo',
-      body:
-        'Once the .fundring file containing your funding proof has been pushed to your repository, click the button below to verify it was added correctly.',
-      buttonLabel: 'Verify Funding Proof',
-      buttonAction: handleVerifyFundring
-    },
-    {
-      title: 'Deploy The Contract',
-      html:
-        '<p class="mb-4">This step will:</p><ol class="pl-10 mb-4 list-decimal"><li class="mb-2"><strong>Deploy</strong> the Fund Ring contract for you</li><li class="mb-2"><strong>Initialize</strong> the funding goals you entered above</li><li class="mb-2"><strong>Announce</strong> your application to the Fund Ring network.</li></ol><p class="mb-8">Once it’s deployed, you’ll immediately be able to receive funding.</p>',
-      buttonLabel: 'Deploy Contract',
-      buttonAction: handleDeployContract
-    },
-    {
-      title: 'Embed The Funding Widget',
-      body:
-        'Now that your contract is deployed, copy the code below to embed a funding widget directly into your project page.',
-      html:
-        '<div class="flex items-center justify-center h-[231px] mb-4 px-7 border border-odd-gray-500 bg-odd-yellow-100 break-words" ><p class="uppercase font-sans text-odd-blue-500 text-heading-xl text-center">Coming Soon</p></div>',
-      buttonLabel: 'Copy to Clipboard'
-    }
-  ]
 
   onDestroy(() => {
     unsubscribeEvents()
@@ -274,72 +234,79 @@
 
 <IntroBlurb />
 
-{#each steps as step, i}
-  <div id={`step${i + 1}`} class={i !== 0 ? 'pt-10' : ''}>
-    <h3 class="uppercase text-body-sm">
-      Step {i + 1}
-      {#if currentStep > i}<span class="pl-2 text-odd-green-500">
-          Complete!
-        </span>{/if}
-    </h3>
-    <h2 class="mb-4">{step.title}</h2>
+<!-- Project Details -->
+<Step {currentStep} step={1} title="Provide Your Project Details">
+  <JoinForm slot="main" {handleDetailsSubmit} />
+</Step>
 
-    {#if i === 0}
-      <JoinForm {step} {handleDetailsSubmit} />
-    {/if}
+<!-- Sign Proof -->
+<Step
+  {currentStep}
+  step={2}
+  title="Sign A Funding Proof"
+  body="Connect your fund wallet to sign a Fund Proof. We’ll use this signed message to verify the connection between the fund wallet"
+  buttonLabel={connectButtonText}
+  buttonAction={handleConnectOrSign}
+/>
 
-    {#if step.body}
-      <p class="mb-8">{step.body}</p>
-    {/if}
+<!-- Add Proof to Repo -->
+<Step
+  {currentStep}
+  step={3}
+  title="Add The Funding Proof To Your Git Repo"
+  body={`To prove the connection between your project’s code and the funding wallet, please add a file called \`${
+    $projectDetails.name ? $projectDetails.slug : '<project-slug>'
+  }.fundring\` to the root of your repository.`}
+  buttonLabel={`Download ${
+    $projectDetails.name ? $projectDetails.slug : '<project-slug>'
+  }.fundring`}
+  buttonAction={handleCopyFundringContents}
+/>
 
-    <!-- Display .fundring contents -->
-    {#if i === 2 && currentStep >= 2}
-      <div
-        class="min-h-[48px] mb-8 p-2.5 border border-odd-gray-500 bg-odd-yellow-100 text-body-sm break-words"
-      >
-        {$projectDetails.signature}
-      </div>
-    {/if}
+<!-- Verify Proof in Repo -->
+<Step
+  {currentStep}
+  step={4}
+  title="Verify Your Repo"
+  body={`Once the \`${
+    $projectDetails.name ? $projectDetails.slug : '<project-slug>'
+  }.fundring\` file containing your funding proof has been pushed to your repository, click the button below to verify it was added correctly.`}
+  buttonLabel="Verify Funding Proof"
+  buttonAction={handleVerifyFundring}
+/>
 
-    {#if step.html}
-      {@html step.html}
-    {/if}
-
-    {#if deployedAddress && i === 4}
+<!-- Deploy the contract -->
+<Step
+  {currentStep}
+  step={5}
+  title="Deploy The Contract"
+  html={`<p class="mb-4">This step will:</p><ol class="pl-10 mb-4 list-decimal"><li class="mb-2"><strong>Deploy</strong> the Fund Ring contract for you</li><li class="mb-2"><strong>Initialize</strong> the funding goals you entered above</li><li class="mb-2"><strong>Announce</strong> your application to the Fund Ring network.</li></ol><p class="mb-8">Once it’s deployed, you’ll immediately be able to receive funding.</p>`}
+  buttonLabel={loading
+    ? 'processing'
+    : deployedAddress
+    ? 'Copy to Clipboard'
+    : 'Deploy Contract'}
+  buttonAction={deployedAddress
+    ? async () => {
+        await clipboardCopy(deployedAddress)
+        addNotification('Copied to clipboard', 'success')
+      }
+    : handleDeployContract}
+  buttonDisabled={loading}
+  {loading}
+>
+  <div slot="main">
+    {#if deployedAddress}
       <p class="mb-4">Contract deployed to:</p>
       <div
-        class="min-h-[48px] mb-8 p-2.5 border border-odd-gray-500 bg-odd-yellow-100 text-body-sm break-words"
+        class="min-h-[48px] mb-4 p-2.5 border border-odd-gray-500 bg-odd-yellow-100 text-body-sm break-words"
       >
         {deployedAddress}
       </div>
     {/if}
-
-    {#if step.buttonLabel && i !== 0}
-      <button
-        on:click={i === 4 && deployedAddress
-          ? async () => {
-              await clipboardCopy(deployedAddress)
-              addNotification('Copied to clipboard', 'success')
-            }
-          : step.buttonAction}
-        disabled={currentStep < i || i === 5 || (i === 4 && loading)}
-        class="btn btn-primary {i === 5 || (i === 4 && deployedAddress)
-          ? 'btn-outline'
-          : ''} w-full text-odd-yellow-100"
-      >
-        {#if i === 1}
-          {connectButtonText}
-        {:else if i === 4 && loading}
-          processing
-        {:else if i === 4 && deployedAddress}
-          Copy to Clipboard
-        {:else}
-          {step.buttonLabel}
-        {/if}
-      </button>
-    {/if}
-
-    {#if i === 4 && deployedAddress}
+  </div>
+  <div slot="footer">
+    {#if deployedAddress}
       <a
         href={`https://calibration.filfox.info/en/address/${deployedAddress}`}
         target="_blank"
@@ -350,4 +317,15 @@
       </a>
     {/if}
   </div>
-{/each}
+</Step>
+
+<!-- Copy Widget Embed Code -->
+<Step
+  {currentStep}
+  step={6}
+  title="Embed The Funding Widget"
+  body="Now that your contract is deployed, copy the code below to embed a funding widget directly into your project page."
+  html={`<div class="flex items-center justify-center h-[231px] mb-4 px-7 border border-odd-gray-500 bg-odd-yellow-100 break-words" ><p class="uppercase font-sans text-odd-blue-500 text-heading-xl text-center">Coming Soon</p></div>`}
+  buttonLabel="Copy to Clipboard"
+  buttonDisabled={true}
+/>

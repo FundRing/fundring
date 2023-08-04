@@ -5,7 +5,7 @@ import { get as getStore } from 'svelte/store'
 import { abi } from '$contracts/FundRingProject.sol/FundRingProject.json'
 import { sessionStore } from '$src/stores'
 
-export const CONTRACT_ADDRESS = '0x17826a0fA8ff1C708eF8728f67C5F9932e60770b'
+export const CONTRACT_ADDRESS = '0xA22D57E6be1aE643F00D048C26cA5d5e3E7E0354'
 
 export const NETWORK_MAP = {
   mainnet: {

@@ -1,6 +1,5 @@
 <script lang="ts">
   export let handleDetailsSubmit = event => {}
-  export let step = { buttonLabel: '' }
 
   // Ensure the repo link is a valid git link
   const handleValidateRepoLink = event => {
@@ -100,6 +99,6 @@
     </div>
   </div>
   <button type="submit" class="btn btn-primary w-full text-odd-yellow-100">
-    {step.buttonLabel}
+    Submit Details
   </button>
 </form>

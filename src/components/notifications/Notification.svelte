@@ -13,25 +13,25 @@
     info: {
       component: InfoThinIcon,
       props: {
-        color: '#6649F8'
+        color: '#F0EDE1'
       }
     },
     error: {
       component: XThinIcon,
       props: {
-        color: '#BE5366'
+        color: '#F0EDE1'
       }
     },
     success: {
       component: CheckThinIcon,
       props: {
-        color: '#0F9162'
+        color: '#F0EDE1'
       }
     },
     warning: {
       component: WarningThinIcon,
       props: {
-        color: '#DFC334'
+        color: '#F0EDE1'
       }
     }
   }
@@ -47,13 +47,12 @@
   <div
     class="alert alert-{notification.type} text-body-sm mb-3 peer-last:mb-0 rounded-sm text-odd-yellow-100"
   >
-    <div>
-      <!-- <svelte:component
+    <div class="flex gap-1 items-center justify-center">
+      <svelte:component
         this={iconMap[notification.type].component}
         {...iconMap[notification.type].props}
-      /> -->
-      <!-- <span class="pl-1">{@html notification.msg}</span> -->
-      <span>{@html notification.msg}</span>
+      />
+      <span class="pl-1">{@html notification.msg}</span>
     </div>
   </div>
 </div>

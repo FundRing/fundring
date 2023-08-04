@@ -4,11 +4,10 @@
     getNetwork,
     prepareWriteContract,
     switchNetwork,
-    watchContractEvent,
     writeContract
   } from '@wagmi/core'
   import { dev } from '$app/environment'
-  import { ethers, utils } from 'ethers'
+  import { ethers } from 'ethers'
   import { onDestroy, onMount } from 'svelte'
   import { parseEther } from 'viem'
 
@@ -30,8 +29,34 @@
 
   let loading = false
   let fetchingData = true
+  let fundingFrequency = null
   let fundingGoal = 0
   let totalFundsRaised = 0
+
+  const FREQUENCY_MAP = {
+    'one-time': '',
+    monthly: ' month',
+    annually: ' year'
+  }
+
+  // Get the total funds raised based on the frequency set for the contract
+  const getTotalFundsRaisedByFrequency = async () => {
+    let totalFundsRaisedRaw: string
+    if (fundingFrequency === 'monthly') {
+      totalFundsRaisedRaw = await contract.getFundsRaisedByMonth(
+        new Date(Date.now())
+          .toLocaleString('en-US', { month: 'long' })
+          .toLowerCase()
+      )
+    } else if (fundingFrequency === 'annually') {
+      totalFundsRaisedRaw = await contract.getFundsRaisedByYear(
+        new Date().getFullYear()
+      )
+    } else {
+      totalFundsRaisedRaw = await contract.getTotalFundsRaised()
+    }
+    totalFundsRaised = Number(ethers.utils.formatEther(totalFundsRaisedRaw))
+  }
 
   // Submit the users FIL contribution to the Fund Ring contract
   const handleContributeSubmit = async (event: SubmitEvent) => {
@@ -65,8 +90,7 @@
 
       await checkStatusOfPendingTX(hash)
 
-      const totalFundsRaisedRaw = await contract.getTotalFundsRaised()
-      totalFundsRaised = Number(ethers.utils.formatEther(totalFundsRaisedRaw))
+      await getTotalFundsRaisedByFrequency()
 
       loading = false
     } catch (error) {
@@ -82,7 +106,10 @@
       Number(ethers.utils.formatEther(_totalFundsRaised)) > totalFundsRaised
     ) {
       fetchingData = true
+      loading = true
       totalFundsRaised = Number(ethers.utils.formatEther(_totalFundsRaised))
+      addNotification('Contribution successful!', 'success')
+      loading = false
       fetchingData = false
     }
   })
@@ -90,8 +117,8 @@
   onMount(async () => {
     fetchingData = true
 
-    const totalFundsRaisedRaw = await contract.getTotalFundsRaised()
-    totalFundsRaised = Number(ethers.utils.formatEther(totalFundsRaisedRaw))
+    fundingFrequency = await contract.getFundingFrequency()
+    await getTotalFundsRaisedByFrequency()
     const fundingGoalRaw = await contract.fundingGoal()
     fundingGoal = Number(ethers.utils.formatEther(fundingGoalRaw))
 
@@ -121,7 +148,7 @@
 
   <h3 class="mb-1">How much can you help?</h3>
   <p class="mb-4 text-body-sm">
-    Our goal this month is {#if fetchingData}<div
+    Our goal this{FREQUENCY_MAP[fundingFrequency]} is {#if fetchingData}<div
         class="inline-block w-5 h-4 ml-1 translate-y-[2px] bg-odd-gray-100 rounded-sm animate-pulse"
       />{:else}{fundingGoal}{/if}FIL. We need another {#if fetchingData}<div
         class="inline-block w-5 h-4 ml-1 translate-y-[2px] bg-odd-gray-100 rounded-sm animate-pulse"
@@ -150,10 +177,10 @@
     <button
       disabled={loading}
       type="submit"
-      class="btn form-btn h-[54px] w-full bg-odd-gray-500 text-odd-yellow-100"
+      class="btn form-btn h-[54px] w-full bg-odd-gray-500 hover:bg-odd-gray-400 text-odd-yellow-100 !border-0"
     >
       {#if loading}
-        <span class="loading loading-spinner text-primary" />
+        <span class="loading loading-spinner" />
         processing
       {:else}
         Contribute FIL

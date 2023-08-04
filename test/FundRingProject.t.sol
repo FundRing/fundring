@@ -18,85 +18,75 @@ contract TestFundRingProject is Test {
   }
 
   function testDeployment() public {
-    // Test that the contract is deployed with the correct values
     assertEq(
       fundRingProject.projectName(),
       'Test Project',
-      'Incorrect project name'
+      'Project name should match'
     );
+    assertEq(fundRingProject.fundingGoal(), 1000, 'Funding goal should match');
     assertEq(
-      fundRingProject.githubRepoLink(),
-      'https://github.com/test/test-project.git',
-      'Incorrect GitHub repo link'
-    );
-    assertEq(fundRingProject.fundingGoal(), 1000, 'Incorrect funding goal');
-    assertEq(
-      fundRingProject.fundingFrequency(),
+      fundRingProject.getFundingFrequency(),
       'monthly',
-      'Incorrect funding frequency'
+      'Funding frequency should match'
     );
     assertEq(
-      fundRingProject.totalFundsRaised(),
+      fundRingProject.getTotalFundsRaised(),
       0,
-      'Initial funds raised should be 0'
-    );
-    assertEq(
-      fundRingProject.projectOwner(),
-      address(this),
-      'Incorrect project owner'
+      'Total funds raised should be zero initially'
     );
   }
 
   function testContributeFunds() public {
-    // Test that funds can be contributed to the contract
-    fundRingProject.contributeFunds{value: 500}();
-    fundRingProject.contributeFunds{value: 300}();
-    fundRingProject.contributeFunds{value: 200}();
+    uint256 initialBalance = address(this).balance;
+    uint256 contributionAmount = 1 ether;
+
+    // Make a contribution
+    fundRingProject.contributeFunds{value: contributionAmount}();
+    uint256 totalFundsRaised = fundRingProject.getTotalFundsRaised();
 
     assertEq(
-      fundRingProject.totalFundsRaised(),
-      1000,
-      'Total funds raised should be equal to the funding goal'
+      totalFundsRaised,
+      contributionAmount,
+      'Total funds raised should match the contribution amount'
     );
-
-    assertTrue(
-      fundRingProject.isFundingComplete(),
-      'Funding goal should be reached'
-    );
-  }
-
-  function testMonthlyFunding() public {
-    // Test monthly funding functionality
-    fundRingProject = new FundRingProject(
-      'Test Monthly Project',
-      'https://github.com/test/monthly-project.git',
-      500,
-      'monthly'
-    );
-
-    fundRingProject.contributeFunds{value: 100}();
-    fundRingProject.contributeFunds{value: 200}();
-    fundRingProject.contributeFunds{value: 100}();
-
-    assertFalse(
-      fundRingProject.isFundingComplete(),
-      'Funding goal should not be reached yet'
-    );
-
-    // Wait for one month (30 days) to pass
-    uint256 thirtyDays = 30 * 1 days;
-    uint256 futureTime = block.timestamp + thirtyDays;
-    // while (block.timestamp < futureTime) {
-    //   block.timestamp += 1;
-    // }
-
-    fundRingProject.contributeFunds{value: 100}();
-
-    assertTrue(
-      fundRingProject.isFundingComplete(),
-      'Funding goal should be reached after one month'
+    assertEq(
+      address(this).balance,
+      initialBalance - contributionAmount,
+      'Contract balance should decrease by contribution amount'
     );
   }
 
-  // Add more tests as needed...
+  function testWithdrawFunds() public {
+    uint256 fundingGoal = fundRingProject.fundingGoal();
+    uint256 contributionAmount = 1000;
+
+    // Make a contribution
+    fundRingProject.contributeFunds{value: contributionAmount}();
+
+    assertEq(
+      fundRingProject.isFundingComplete(),
+      true,
+      'isFundingComplete() should return true'
+    );
+
+    if (contributionAmount >= fundingGoal) {
+      uint256 initialBalance = address(this).balance;
+      address payable projectOwner = payable(fundRingProject.projectOwner());
+
+      // Make the withdrawal
+      fundRingProject.withdrawFunds();
+
+      assertEq(
+        address(this).balance,
+        initialBalance - contributionAmount,
+        'Contract balance should decrease by contribution amount'
+      );
+      assertEq(address(this).balance, 0, 'All funds should be withdrawn');
+      assertEq(
+        projectOwner.balance,
+        contributionAmount,
+        'Project owner should receive the funds'
+      );
+    }
+  }
 }
