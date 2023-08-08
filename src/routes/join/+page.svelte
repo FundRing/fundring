@@ -26,6 +26,12 @@
   import Step from './components/Step.svelte'
 
   let currentStep = 1
+  const loadingText = [
+    'processing',
+    'sit tight',
+    'network traffic',
+    'affects wait time'
+  ]
 
   // Create web3 storage client
   const web3StorageClient = new Web3Storage({
@@ -153,8 +159,14 @@
   // Deploy generated contract with form values
   let loading = false
   let deployedAddress
+  let i = 0
   const handleDeployContract = async () => {
     loading = true
+
+    const interval = setInterval(() => {
+      i == 3 ? (i = 0) : i++
+    }, 1500)
+
     try {
       const { chain } = getNetwork()
 
@@ -223,6 +235,8 @@
       addNotification('Deployment failed', 'error')
       loading = false
     }
+
+    clearInterval(interval)
   }
 
   onDestroy(() => {
@@ -282,7 +296,7 @@
   title="Deploy The Contract"
   html={`<p class="mb-4">This step will:</p><ol class="pl-10 mb-4 list-decimal"><li class="mb-2"><strong>Deploy</strong> the Fund Ring contract for you</li><li class="mb-2"><strong>Initialize</strong> the funding goals you entered above</li><li class="mb-2"><strong>Announce</strong> your application to the Fund Ring network.</li></ol><p class="mb-8">Once it’s deployed, you’ll immediately be able to receive funding.</p>`}
   buttonLabel={loading
-    ? 'processing'
+    ? loadingText[i]
     : deployedAddress
     ? 'Copy to Clipboard'
     : 'Deploy Contract'}

@@ -32,6 +32,12 @@
   let fundingFrequency = null
   let fundingGoal = 0
   let totalFundsRaised = 0
+  const loadingText = [
+    'processing',
+    'sit tight',
+    'network traffic',
+    'affects wait time'
+  ]
 
   const FREQUENCY_MAP = {
     'one-time': '',
@@ -59,8 +65,13 @@
   }
 
   // Submit the users FIL contribution to the Fund Ring contract
+  let i = 0
   const handleContributeSubmit = async (event: SubmitEvent) => {
     loading = true
+
+    const interval = setInterval(() => {
+      i == 3 ? (i = 0) : i++
+    }, 1500)
 
     try {
       const formData = new FormData(event.target as HTMLFormElement)
@@ -73,7 +84,6 @@
           const network = await switchNetwork({
             chainId: Number(NETWORK_MAP.testnet.chainId)
           })
-          console.log('network', network)
         } catch (error) {
           console.error(error)
           console.log('could not programmitcally switch network')
@@ -98,6 +108,7 @@
       addNotification('Transaction failed', 'error')
       loading = false
     }
+    clearInterval(interval)
   }
 
   // Listen for contribution events on contract and update amounts if there is network latency
@@ -181,7 +192,7 @@
     >
       {#if loading}
         <span class="loading loading-spinner" />
-        processing
+        {loadingText[i]}
       {:else}
         Contribute FIL
       {/if}
