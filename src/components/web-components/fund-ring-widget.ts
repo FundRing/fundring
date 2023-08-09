@@ -26,8 +26,10 @@ customElements.define(
           // the native string attributes and the types you expect
           // in your svelte components
           contractAddress: this.getAttribute('contractAddress'),
-          title: this.getAttribute('title'),
-          bodyCopy: this.getAttribute('bodyCopy')
+          title: this.getAttribute('title') ?? 'Help fund us!',
+          bodyCopy:
+            this.getAttribute('bodyCopy') ??
+            'If you rely upon Fund Ring’s efforts to keep your project going, please consider supporting our funding goal. Every little bit helps.'
         }
       })
     }

@@ -17,54 +17,54 @@
   font-style: normal;
 }
 
-.fund-ring-widget-wrapper h1, .fund-ring-widget-wrapper h2, .fund-ring-widget-wrapper h3, .fund-ring-widget-wrapper h4, .fund-ring-widget-wrapper h5, .fund-ring-widget-wrapper h6 {
+#fund-ring-app h1, #fund-ring-app h2, #fund-ring-app h3, #fund-ring-app h4, #fund-ring-app h5, #fund-ring-app h6 {
   @apply font-sans;
 }
 
-.fund-ring-widget-wrapper h1 {
+#fund-ring-app h1 {
   @apply text-heading-xl font-bold;
 }
 
-.fund-ring-widget-wrapper h2 {
+#fund-ring-app h2 {
   @apply text-heading-m font-bold;
 }
 
-.fund-ring-widget-wrapper h3 {
+#fund-ring-app h3 {
   @apply text-body-m font-bold;
 }
 
-.fund-ring-widget-wrapper, .fund-ring-widget-wrapper input {
+#fund-ring-app, #fund-ring-app input {
   @apply font-serif;
   @apply text-body-m;
   font-weight: 350;
 }
 
 /* Button default styles */
-.fund-ring-widget-wrapper .btn {
+#fund-ring-app .btn {
   @apply font-sans text-body-m border-2;
 }
 
-.fund-ring-widget-wrapper .btn.btn-outline:hover {
+#fund-ring-app .btn.btn-outline:hover {
   @apply text-odd-yellow-100;
 }
 
-.fund-ring-widget-wrapper .btn[disabled] {
+#fund-ring-app .btn[disabled] {
   @apply bg-odd-green-500 text-odd-yellow-100 opacity-50;
 }
 
-.fund-ring-widget-wrapper .btn[disabled].btn-outline {
+#fund-ring-app .btn[disabled].btn-outline {
   @apply bg-odd-yellow-200 text-odd-green-500 opacity-50;
 }
 
-.fund-ring-widget-wrapper .btn[disabled].form-btn {
+#fund-ring-app .btn[disabled].form-btn {
   @apply bg-odd-gray-500 text-odd-yellow-100 opacity-50;
 }
 
-.fund-ring-widget-wrapper .btn-loading {
+#fund-ring-app .btn-loading {
   @apply text-left;
 }
 
-.fund-ring-widget-wrapper .btn-loading:after {
+#fund-ring-app .btn-loading:after {
   content: "...";
   overflow: hidden;
   display: inline-block;
@@ -75,29 +75,29 @@
 }
 
 /* Input default styles */
-.fund-ring-widget-wrapper .input-bordered {
+#fund-ring-app .input-bordered {
   @apply text-base-content;
   @apply border-2;
   @apply border-base-content;
 }
 
 /* Chrome, Safari, Edge, Opera */
-.fund-ring-widget-wrapper input::-webkit-outer-spin-button,
-.fund-ring-widget-wrapper input::-webkit-inner-spin-button {
+#fund-ring-app input::-webkit-outer-spin-button,
+#fund-ring-app input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
 /* Firefox */
-.fund-ring-widget-wrapper input[type=number] {
+#fund-ring-app input[type=number] {
   -moz-appearance: textfield;
 }
 
 /* Label default styles */
-.fund-ring-widget-wrapper .label {
+#fund-ring-app .label {
   @apply px-0;
 }
 
-.fund-ring-widget-wrapper .label-text-alt {
+#fund-ring-app .label-text-alt {
   @apply text-body-sm;
 }

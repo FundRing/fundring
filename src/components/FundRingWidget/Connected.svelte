@@ -65,7 +65,7 @@
 
     const interval = setInterval(() => {
       i == 2 ? (i = 0) : i++
-    }, 1200)
+    }, 1400)
 
     try {
       const formData = new FormData(event.target as HTMLFormElement)
@@ -75,7 +75,7 @@
       // Prompt the user to switch networks if they are not on Calibration
       if (chain.id !== Number(NETWORK_MAP.testnet.chainId)) {
         try {
-          const network = await switchNetwork({
+          await switchNetwork({
             chainId: Number(NETWORK_MAP.testnet.chainId)
           })
         } catch (error) {
@@ -139,7 +139,7 @@
 </script>
 
 <div
-  class="w-full pt-10 px-8 pb-6 mb-10 border border-odd-gray-500 rounded-sm shadow-normal bg-odd-yellow-200 text-odd-gray-500"
+  class="w-full pt-10 px-8 pb-6 border border-odd-gray-500 rounded-sm shadow-normal bg-odd-yellow-200 text-odd-gray-500"
 >
   <h2 class="mb-2">{title}</h2>
   <p class="mb-8 text-body-sm">
@@ -155,7 +155,14 @@
       />{:else}{fundingGoal - totalFundsRaised}{/if}FIL to hit it.
   </p>
 
-  <div class="mb-4" />
+  <div
+    class="relative h-4 mb-4 border border-odd-gray-500 rounded overflow-hidden"
+  >
+    <div
+      class="absolute left-0 top-0 bottom-0 z-0 h-4 bg-odd-gray-500"
+      style={`width: ${(totalFundsRaised / fundingGoal) * 100}%;`}
+    />
+  </div>
 
   <form on:submit|preventDefault={handleContributeSubmit} class="mb-7">
     <div class="relative mb-4">

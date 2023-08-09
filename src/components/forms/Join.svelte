@@ -3,19 +3,18 @@
 
   // Ensure the repo link is a valid git link
   const handleValidateRepoLink = event => {
-    const repoLink = event.target.value
-    const urlPattern = new RegExp(
-      '(?:https?)://(w+:?w*)?(S+)(:d+)?(/|/([w#!:.?+=&%!-/]))?'
-    )
-
-    if (
-      repoLink.length > 0 &&
-      !repoLink.includes('.git') &&
-      !urlPattern.test(repoLink)
-    ) {
-      console.log('invalid')
-    } else {
-    }
+    // const repoLink = event.target.value
+    // const urlPattern = new RegExp(
+    //   '(?:https?)://(w+:?w*)?(S+)(:d+)?(/|/([w#!:.?+=&%!-/]))?'
+    // )
+    // // if (
+    // //   repoLink.length > 0 &&
+    // //   !repoLink.includes('.git') &&
+    // //   !urlPattern.test(repoLink)
+    // // ) {
+    // //   console.log('invalid')
+    // // } else {
+    // // }
   }
 </script>
 
