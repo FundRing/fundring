@@ -1,4 +1,4 @@
-import { browser } from '$app/environment'
+// import { browser } from '$app/environment'
 
 export type ThemeOptions = 'light' | 'dark'
 
@@ -14,7 +14,7 @@ export const getSystemDefaultTheme = (): ThemeOptions =>
   window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 
 export const loadTheme = (): Theme => {
-  if (browser) {
+  // if (browser) {
     const useDefault = localStorage.getItem(DEFAULT_THEME_KEY) !== 'undefined' && JSON.parse(localStorage.getItem(DEFAULT_THEME_KEY))
     // const browserTheme = localStorage.getItem(THEME_KEY) as ThemeOptions
     // const osTheme = getSystemDefaultTheme()
@@ -31,11 +31,11 @@ export const loadTheme = (): Theme => {
       selectedTheme: 'light',
       useDefault,
     }
-  }
+  // }
 }
 
 export const storeTheme = (theme: ThemeOptions): void => {
-  if (browser) {
+  // if (browser) {
     localStorage.setItem('theme', theme)
-  }
+  // }
 }

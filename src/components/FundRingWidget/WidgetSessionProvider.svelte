@@ -1,3 +1,5 @@
+<svelte:options tag="fund-ring-widget" accessors={true} />
+
 <script lang="ts">
   import {
     EthereumClient,
@@ -10,7 +12,12 @@
   import { ethers } from 'ethers'
 
   import { sessionStore } from '$src/stores'
+  import FundRingWidget from '$components/FundRingWidget/FundRingWidget.svelte'
   import FullScreenLoadingSpinner from '$components/common/FullScreenLoadingSpinner.svelte'
+
+  export let contractAddress: string = null
+  export let title: string = null
+  export let bodyCopy: string = null
 
   const chains = [filecoin, filecoinCalibration]
   const projectId = 'c7a37f5b7c8aa244bc4573f1d633cb60'
@@ -49,8 +56,10 @@
   loading = false
 </script>
 
-{#if loading}
-  <FullScreenLoadingSpinner />
-{:else}
-  <slot />
-{/if}
+<div id="fund-ring-app">
+  {#if loading}
+    <FullScreenLoadingSpinner />
+  {:else}
+    <FundRingWidget {contractAddress} {bodyCopy} {title} />
+  {/if}
+</div>

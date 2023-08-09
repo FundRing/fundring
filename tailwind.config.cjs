@@ -1,4 +1,5 @@
 module.exports = {
+  important: '#fund-ring-app',
   mode: 'jit',
   content: ['./src/**/*.{html,js,svelte,ts}'],
   safelist: ['alert-success', 'alert-error', 'alert-info', 'alert-warning'],
@@ -61,7 +62,7 @@ module.exports = {
         '22/23': '22 / 23'
       },
       boxShadow: {
-        'normal': '0px 0px 16px 0px rgba(0, 0, 0, 0.25)',
+        normal: '0px 0px 16px 0px rgba(0, 0, 0, 0.25)'
       },
       colors: {
         'odd-gray': {

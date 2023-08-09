@@ -1,9 +1,9 @@
-import { dev } from '$app/environment'
+// import { dev } from '$app/environment'
 import { ethers } from 'ethers'
 import { get as getStore } from 'svelte/store'
 
-import { abi } from '$contracts/FundRingProject.sol/FundRingProject.json'
-import { sessionStore } from '$src/stores'
+import { abi } from '../contracts/FundRingProject.sol/FundRingProject.json'
+import { sessionStore } from '../stores'
 
 export const CONTRACT_ADDRESS = '0xA22D57E6be1aE643F00D048C26cA5d5e3E7E0354'
 
@@ -55,15 +55,15 @@ export const checkStatusOfPendingTX = async (txHash: string): Promise<{ contract
       receipt = await provider.getTransactionReceipt(txHash)
 
       if (receipt === null) {
-        if (dev) {
-          console.log('Checking for tx receipt...')
-        }
+        // if (dev) {
+        //   console.log('Checking for tx receipt...')
+        // }
         continue
       }
 
-      if (dev) {
-        console.log('Receipt fetched:', receipt)
-      }
+      // if (dev) {
+      //   console.log('Receipt fetched:', receipt)
+      // }
     } catch (e) {
       console.error(e)
       break

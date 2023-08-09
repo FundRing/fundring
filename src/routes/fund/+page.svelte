@@ -1,32 +1,12 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte'
-
-  import { sessionStore } from '$src/stores'
-  import Connected from './components/Connected.svelte'
-  import Disconnected from './components/Disconnected.svelte'
-
-  let connected = $sessionStore.ethereumClient.getAccount().isConnected
-
-  const unsubscribeEvents = $sessionStore.web3modal.subscribeEvents(
-    newState => {
-      connected = newState.name === 'ACCOUNT_CONNECTED'
-    }
-  )
-
-  const unsubscribeAccount = $sessionStore.ethereumClient.watchAccount(
-    newState => {
-      connected = newState.isConnected
-    }
-  )
-
-  onDestroy(() => {
-    unsubscribeEvents()
-    unsubscribeAccount()
-  })
+  import { CONTRACT_ADDRESS } from '$lib/contract'
+  import FundRingWidget from '$components/FundRingWidget/FundRingWidget.svelte'
 </script>
 
-{#if connected}
-  <Connected />
-{:else}
-  <Disconnected />
-{/if}
+<h1 class="mb-12">Fund the Ring</h1>
+
+<FundRingWidget contractAddress={CONTRACT_ADDRESS} />
+
+<a href="/join" class="btn btn-primary w-full mt-10 text-odd-yellow-100">
+  Join the Ring
+</a>

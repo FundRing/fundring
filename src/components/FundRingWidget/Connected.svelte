@@ -1,4 +1,3 @@
-<!-- <svelte:options tag="funding-widget" /> -->
 <script lang="ts">
   import {
     getNetwork,
@@ -6,23 +5,23 @@
     switchNetwork,
     writeContract
   } from '@wagmi/core'
-  import { dev } from '$app/environment'
   import { ethers } from 'ethers'
   import { onDestroy, onMount } from 'svelte'
   import { parseEther } from 'viem'
 
-  import BrandLogoSmall from '$components/icons/BrandLogoSmall.svelte'
-  import { abi } from '$contracts/FundRingProject.sol/FundRingProject.json'
-  import { sessionStore } from '$src/stores'
-  import { addNotification } from '$lib/notifications'
-  import {
-    CONTRACT_ADDRESS,
-    NETWORK_MAP,
-    checkStatusOfPendingTX
-  } from '../lib/contract'
+  import BrandLogoSmall from '../icons/BrandLogoSmall.svelte'
+  import { abi } from '../../contracts/FundRingProject.sol/FundRingProject.json'
+  import { sessionStore } from '../../stores'
+  import { addNotification } from '../../lib/notifications'
+  import { NETWORK_MAP, checkStatusOfPendingTX } from '../../lib/contract'
+
+  export let contractAddress: string = null
+  export let title: string = 'Help fund us!'
+  export let bodyCopy: string =
+    'If you rely upon Fund Ring’s efforts to keep your project going, please consider supporting our funding goal. Every little bit helps.'
 
   const contract = new ethers.Contract(
-    CONTRACT_ADDRESS,
+    contractAddress,
     abi,
     $sessionStore.provider
   )
@@ -32,12 +31,7 @@
   let fundingFrequency = null
   let fundingGoal = 0
   let totalFundsRaised = 0
-  const loadingText = [
-    'processing',
-    'sit tight',
-    'network traffic',
-    'affects wait time'
-  ]
+  const loadingText = ['processing', 'sit tight', 'network speed may vary']
 
   const FREQUENCY_MAP = {
     'one-time': '',
@@ -70,8 +64,8 @@
     loading = true
 
     const interval = setInterval(() => {
-      i == 3 ? (i = 0) : i++
-    }, 1500)
+      i == 2 ? (i = 0) : i++
+    }, 1200)
 
     try {
       const formData = new FormData(event.target as HTMLFormElement)
@@ -91,7 +85,7 @@
       }
 
       const request = await prepareWriteContract({
-        address: CONTRACT_ADDRESS,
+        address: contractAddress,
         abi,
         functionName: 'contributeFunds',
         value: parseEther(contributionAmount)
@@ -139,22 +133,17 @@
   onDestroy(async () => {
     // Stop listening for events on contract
     contract.off('FundRingFundsContributed', () => {
-      if (dev) {
-        console.log('unsubscribed from contract events')
-      }
+      // console.log('unsubscribed from contract events')
     })
   })
 </script>
 
-<h1 class="mb-12">Fund the Ring</h1>
-
 <div
-  class="w-full pt-10 px-8 pb-6 mb-10 border border-odd-gray-500 rounded-sm shadow-normal"
+  class="w-full pt-10 px-8 pb-6 mb-10 border border-odd-gray-500 rounded-sm shadow-normal bg-odd-yellow-200 text-odd-gray-500"
 >
-  <h2 class="mb-2">Help fund us!</h2>
+  <h2 class="mb-2">{title}</h2>
   <p class="mb-8 text-body-sm">
-    If you rely upon Fund Ring’s efforts to keep your project going, please
-    consider supporting our funding goal. Every little bit helps.
+    {bodyCopy}
   </p>
 
   <h3 class="mb-1">How much can you help?</h3>
@@ -205,7 +194,3 @@
     Powered by <BrandLogoSmall /> Fund Ring
   </p>
 </div>
-
-<a href="/join" class="btn btn-primary w-full text-odd-yellow-100">
-  Join the Ring
-</a>

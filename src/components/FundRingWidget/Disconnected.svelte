@@ -4,6 +4,10 @@
   import BrandLogoSmall from '$components/icons/BrandLogoSmall.svelte'
   import { sessionStore } from '$src/stores'
 
+  export let title: string = 'Help fund us!'
+  export let bodyCopy: string =
+    'If you rely upon Fund Ring’s efforts to keep your project going, please consider supporting our funding goal. Every little bit helps.'
+
   let loading = false
 
   const unsubscribeModal = $sessionStore.web3modal.subscribeModal(newState => {
@@ -29,22 +33,19 @@
   })
 </script>
 
-<h1 class="mb-12">Fund the Ring</h1>
-
 <div
-  class="w-full pt-10 px-8 pb-6 mb-10 border border-odd-gray-500 rounded-sm shadow-normal"
+  class="w-full pt-10 px-8 pb-6 border border-odd-gray-500 rounded-sm shadow-normal bg-odd-yellow-200 text-odd-gray-500"
 >
-  <h2 class="mb-2">Help fund us!</h2>
+  <h2 class="mb-2">{title}</h2>
   <p class="mb-8 text-body-sm">
-    If you rely upon Fund Ring’s efforts to keep your project going, please
-    consider supporting our funding goal. Every little bit helps.
+    {bodyCopy}
   </p>
 
   <div class="mb-4" />
 
   <button
     on:click={handleConnect}
-    class="btn h-[54px] w-full mb-7 bg-odd-gray-500 text-odd-yellow-100"
+    class="btn h-[54px] w-full mb-7 bg-odd-gray-500 hover:bg-odd-gray-400 text-odd-yellow-100 !border-0"
   >
     {#if loading}
       <span class="loading loading-spinner text-primary" />
@@ -60,7 +61,3 @@
     Powered by <BrandLogoSmall /> Fund Ring
   </p>
 </div>
-
-<a href="/join" class="btn btn-primary w-full text-odd-yellow-100">
-  Join the Ring
-</a>

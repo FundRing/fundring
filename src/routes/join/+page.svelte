@@ -15,10 +15,7 @@
   import { sessionStore } from '$src/stores'
   import { slugify } from '$lib/utils'
   import { addNotification } from '$lib/notifications'
-  import {
-    NETWORK_MAP,
-    checkStatusOfPendingTX
-  } from '$routes/fund/lib/contract'
+  import { NETWORK_MAP, checkStatusOfPendingTX } from '$lib/contract'
   import { abi } from '$contracts/FundRingProject.sol/FundRingProject.json'
   import { CONTRACT_BYTECODE } from './lib/bytecode'
   import JoinForm from '$components/forms/Join.svelte'
@@ -26,12 +23,7 @@
   import Step from './components/Step.svelte'
 
   let currentStep = 1
-  const loadingText = [
-    'processing',
-    'sit tight',
-    'network traffic',
-    'affects wait time'
-  ]
+  const loadingText = ['processing', 'sit tight', 'network speed may vary']
 
   // Create web3 storage client
   const web3StorageClient = new Web3Storage({
@@ -137,7 +129,11 @@
     )
     const blob = await response.blob()
     const text = await blob.text()
-
+    console.log(
+      '$projectDetails.signature.trim().toLowerCase()',
+      $projectDetails.signature.trim().toLowerCase()
+    )
+    console.log('text.trim().toLowerCase()', text.trim().toLowerCase())
     if (
       text.trim().toLowerCase() ===
       $projectDetails.signature.trim().toLowerCase()
@@ -164,8 +160,8 @@
     loading = true
 
     const interval = setInterval(() => {
-      i == 3 ? (i = 0) : i++
-    }, 1500)
+      i == 2 ? (i = 0) : i++
+    }, 1200)
 
     try {
       const { chain } = getNetwork()
@@ -243,6 +239,10 @@
     unsubscribeEvents()
   })
 </script>
+
+<!-- <svelte:head>
+  <script src={`${window.location.origin}/fund-ring-widget.js`}></script>
+</svelte:head> -->
 
 <h1 class="mb-12">Join the Ring</h1>
 
@@ -342,4 +342,14 @@
   html={`<div class="flex items-center justify-center h-[231px] mb-4 px-7 border border-odd-gray-500 bg-odd-yellow-100 break-words" ><p class="uppercase font-sans text-odd-blue-500 text-heading-xl text-center">Coming Soon</p></div>`}
   buttonLabel="Copy to Clipboard"
   buttonDisabled={true}
-/>
+>
+  <!-- <div slot="main">
+    {#if currentStep === 6}
+      <fund-ring-widget contractAddress={deployedAddress} />
+    {/if}
+  </div> -->
+</Step>
+
+<!-- <fund-ring-widget
+  contractAddress="0x7fe03E3A5E9F7AfB8D2EC76EbEdEf4284e773578"
+/> -->

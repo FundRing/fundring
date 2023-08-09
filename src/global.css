@@ -60,6 +60,20 @@ body, input {
   @apply bg-odd-gray-500 text-odd-yellow-100 opacity-50;
 }
 
+.btn-loading {
+  @apply text-left;
+}
+
+.btn-loading:after {
+  content: "...";
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+  animation: ellipsis-dot 1.25s infinite .3s;
+  animation-fill-mode: forwards;
+  width: 1.25em;
+}
+
 /* Input default styles */
 .input-bordered {
   @apply text-base-content;

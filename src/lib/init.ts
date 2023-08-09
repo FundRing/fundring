@@ -40,7 +40,10 @@ export const initialize = async (): Promise<void> => {
         authStrategy: program.auth,
         program,
         loading: false,
-        backupCreated: backupStatus.created
+        backupCreated: backupStatus.created,
+        ethereumClient: null,
+        web3modal: null,
+        provider: null,
       })
 
       filesystemStore.set(program.session.fs)
@@ -53,7 +56,10 @@ export const initialize = async (): Promise<void> => {
         authStrategy: program.auth,
         program,
         loading: false,
-        backupCreated: null
+        backupCreated: null,
+        ethereumClient: null,
+        web3modal: null,
+        provider: null,
       })
 
     }
