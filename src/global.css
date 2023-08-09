@@ -34,37 +34,40 @@ h3 {
 }
 
 body, input {
-  @apply font-serif;
-  @apply text-body-m;
+  @apply font-serif text-body-m;
   font-weight: 350;
 }
 
 /* Button default styles */
-.btn {
+#fund-ring-app .btn {
   @apply font-sans text-body-m border-2;
 }
 
-.btn.btn-outline:hover {
+#fund-ring-app .btn.btn-outline.btn-primary {
+  @apply text-odd-green-500;
+}
+
+#fund-ring-app .btn.btn-outline:hover {
   @apply text-odd-yellow-100;
 }
 
-.btn[disabled] {
+#fund-ring-app .btn[disabled] {
   @apply bg-odd-green-500 text-odd-yellow-100 opacity-50;
 }
 
-.btn[disabled].btn-outline {
+#fund-ring-app .btn[disabled].btn-outline {
   @apply bg-odd-yellow-200 text-odd-green-500 opacity-50;
 }
 
-.btn[disabled].form-btn {
+#fund-ring-app .btn[disabled].form-btn {
   @apply bg-odd-gray-500 text-odd-yellow-100 opacity-50;
 }
 
-.btn-loading {
+#fund-ring-app .btn-loading {
   @apply text-left;
 }
 
-.btn-loading:after {
+#fund-ring-app .btn-loading:after {
   content: "...";
   overflow: hidden;
   display: inline-block;
@@ -75,43 +78,36 @@ body, input {
 }
 
 /* Input default styles */
-.input-bordered {
-  @apply text-base-content;
-  @apply border-2;
-  @apply border-base-content;
+#fund-ring-app .input-bordered {
+  @apply text-base-content border-2 border-base-content;
 }
 
 /* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
+#fund-ring-app input::-webkit-outer-spin-button,
+#fund-ring-app input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
 /* Firefox */
-input[type=number] {
+#fund-ring-app input[type=number] {
   -moz-appearance: textfield;
 }
 
 /* Modal default styles */
-.modal {
-  @apply bg-base-100;
-  @apply bg-opacity-75;
+#fund-ring-app .modal {
+  @apply bg-base-100 bg-opacity-75;
 }
 
-.modal-box {
-  @apply p-12;
-  @apply border-2;
-  @apply border-base-content;
-  @apply min-w-[33vw];
-  @apply max-w-2xl;
+#fund-ring-app .modal-box {
+  @apply p-12 border-2 border-base-content min-w-[33vw] max-w-2xl;
 }
 
 /* Label default styles */
-.label {
+#fund-ring-app .label {
   @apply px-0;
 }
 
-.label-text-alt {
+#fund-ring-app .label-text-alt {
   @apply text-body-sm;
 }
