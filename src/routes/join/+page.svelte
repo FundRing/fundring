@@ -1,6 +1,6 @@
 <script lang="ts">
   // @ts-ignore-next-line
-  import { PUBLIC_WEB3_STORAGE_KEY } from '$env/static/public'
+  import { env } from '$env/dynamic/public'
   import {
     getNetwork,
     getWalletClient,
@@ -32,7 +32,7 @@
 
   // Create web3 storage client
   const web3StorageClient = new Web3Storage({
-    token: PUBLIC_WEB3_STORAGE_KEY
+    token: env.PUBLIC_WEB3_STORAGE_KEY
   })
 
   // Create store to save project details
