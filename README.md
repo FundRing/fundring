@@ -17,14 +17,14 @@
     Fund Ring is a smart contract standard and set of ready-to-embed components, designed to simplify the process of receiving funding for your project in FIL.
     <br />
     <br />
-    <a href="https://github.com/oddsdk/fundring#getting-started"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/FundRing/fundring#getting-started"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://fundring.fission.app">View Demo</a>
     ·
-    <a href="https://github.com/oddsdk/fundring/issues">Report Bug</a>
+    <a href="https://github.com/FundRing/fundring/issues/new?assignees=&labels=bug&projects=&template=bug-report---.md">Report Bug</a>
     ·
-    <a href="https://github.com/oddsdk/fundring/issues">Request Feature</a>
+    <a href="https://github.com/FundRing/fundring/issues/new?assignees=&labels=enhancement&projects=&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
@@ -168,7 +168,7 @@ Ready? Let's go.
 
 1. Clone the repo
     ```sh
-    git clone https://github.com/oddsdk/fundring.git
+    git clone https://github.com/FundRing/fundring.git
     ```
 2. Navigate to project directory
     ```sh
@@ -245,7 +245,7 @@ forge build
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an [issue](https://github.com/oddsdk/fundring/issues) with the tag "enhancement".
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an [issue](https://github.com/FundRing/fundring/issues) with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
 
 1. Fork the Project
@@ -268,8 +268,9 @@ Distributed under the MIT License.
 
 ## Contact
 
--   Project Link: [https://github.com/oddsdk/fundring](https://github.com/oddsdk/fundring)
--   Discord: [https://fission.codes/discord/](https://fission.codes/discord/)
+-   Repo issues Link: [https://github.com/FundRing/fundring/issues](https://github.com/FundRing/fundring/issues)
+-   Filecoin Slack: [https://filecoin.io/slack](https://filecoin.io/slack)
+-   Fission Discord: [https://fission.codes/discord/](https://fission.codes/discord/)
 
 <p align="right">(<a href="#readme-top" class="text-green">back to top</a>)</p>
 
