@@ -52,6 +52,7 @@
       <li><a href="#static-build">Static Build</a></li>
       <li><a href="#building-the-widget-web-component">Building the widget web-component</a></li>
       <li><a href="#embedding-the-fund-ring-widget-in-your-app">Embedding the Fund Ring widget in your app</a></li>
+      <li><a href="#building-the-smart-contracts">Building the smart contracts</a></li>
     </ul>
   </li>
   <li><a href="#contributing">Contributing</a></li>
@@ -213,7 +214,20 @@ Once you have your `fund-ring-widget.js` file, you can embed it in your app usin
   title="A title for the widget"
   bodyCopy="A brief description to display in the body"
 />
+```
 
+### Building the smart contracts
+
+-   Install Foundry
+
+```ssh
+curl -L https://foundry.paradigm.xyz | bash
+```
+
+-   Build the contracts
+
+```ssh
+forge build
 ```
 
 <p align="right">(<a href="#readme-top" class="text-green">back to top</a>)</p>
