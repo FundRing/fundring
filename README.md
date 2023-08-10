@@ -42,6 +42,7 @@
     <ul>
       <li><a href="#contributing-to-the-master-fund-ring-contract">Contributing to the master Fund Ring contract</a></li>
       <li><a href="#joining-the-fund-ring">Joining the Fund Ring</a></li>
+      <li><a href="#funding-widgets-in-the-wild">Funding widgets in the wild</a></li>
     </ul>
   </li>
   <li>
@@ -133,6 +134,12 @@ You can apply [here](https://fundring.fission.app/join) to have your project joi
 This page will deploy a Fund Ring contract for your project, which you will be the owner of. It will also provide you with the code to embed a Funding widget web-component in your project
 
 ![Fund Ring Join UI Screenshot](static/fund-ring-join-ui.png)
+
+<p align="right">(<a href="#readme-top" class="text-green">back to top</a>)</p>
+
+### Funding widgets in the wild
+
+-   [Block Paper Scissors(SLW RK'D)](https://blockpaperscissors.fission.app/fund/)
 
 <p align="right">(<a href="#readme-top" class="text-green">back to top</a>)</p>
 
