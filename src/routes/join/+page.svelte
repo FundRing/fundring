@@ -19,13 +19,13 @@
   import { NETWORK_MAP, checkStatusOfPendingTX } from '$lib/contract'
   import { abi } from '$contracts/FundRingProject.sol/FundRingProject.json'
   import { CONTRACT_BYTECODE } from './lib/bytecode'
-  import FundRingWidget from '$components/FundRingWidget/FundRingWidget.svelte'
+  // import FundRingWidget from '$components/FundRingWidget/FundRingWidget.svelte'
   import JoinForm from '$components/forms/Join.svelte'
   import IntroBlurb from './components/IntroBlurb.svelte'
   import Step from './components/Step.svelte'
 
   let currentStep = 1
-  let showWidgetPreview = false
+  // let showWidgetPreview = false
   const loadingText = ['processing', 'sit tight', 'network speed may vary']
 
   // Create web3 storage client
@@ -246,7 +246,7 @@
   // Copy the fund ring widget instantiation code
   const handleCopyFundringWidgetCode = async () => {
     await clipboardCopy(
-      `<script src="fund-ring-widget.js"><\/script>\n<fund-ring-widget contractAddress="${deployedAddress}" title="Help fund ${$projectDetails.name}!" bodyCopy="A brief description" \/>`
+      `<script src="fund-ring-widget.js"><\/script>\n\n<fund-ring-widget\n  contractAddress="${deployedAddress}"\n  title="Help fund ${$projectDetails.name}!"\n  bodyCopy="A brief description"\n\/>`
     )
     addNotification('Copied to clipboard!', 'success')
   }
