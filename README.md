@@ -5,28 +5,6 @@
 [![Built by FISSION](https://img.shields.io/badge/⌘-Built_by_FISSION-purple.svg)](https://fission.codes) [![Discord](https://img.shields.io/discord/478735028319158273.svg)](https://discord.gg/zAQBDEq) [![Discourse](https://img.shields.io/discourse/https/talk.fission.codes/topics)](https://talk.fission.codes)
 
 <!-- PROJECT LOGO -->
-<style>
-  .block {
-    display: block;
-  }
-
-  .marginBottom {
-    margin-bottom: 20px;
-  }
-
-  a {
-    color: #0F9162;
-  }
-
-  .text-green {
-    color: #0F9162;
-  }
-
-  .constrainWidth {
-    margin: auto;
-    max-width: 600px;
-  }
-</style>
 <br />
 <div align="center">
   <a href="https://github.com/FundRing/fundring" class="block marginBottom">
