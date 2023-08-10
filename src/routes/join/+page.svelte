@@ -34,7 +34,7 @@
   const web3StorageClient = new Web3Storage({
     token: PUBLIC_WEB3_STORAGE_KEY
   })
-  console.log('PUBLIC_WEB3_STORAGE_KEY', PUBLIC_WEB3_STORAGE_KEY)
+
   // Create store to save project details
   const projectDetails = writable({
     name: null,
@@ -392,14 +392,15 @@
     {/if}
   </div>
   <div slot="footer">
-    {#if currentStep === 6}
-      <button
-        class="btn btn-primary w-full mt-4 mb-4 text-odd-yellow-100"
-        on:click={handleDownloadFundringWidget}
-      >
-        Download widget script
-      </button>
+    <button
+      class="btn btn-primary w-full mt-4 mb-4 text-odd-yellow-100"
+      on:click={handleDownloadFundringWidget}
+      disabled={currentStep !== 6}
+    >
+      Download widget script
+    </button>
 
+    {#if currentStep === 6}
       <!-- {#if showWidgetPreview}
         <h3 class="mb-4 uppercase text-body-sm">Widget Preview</h3>
 
