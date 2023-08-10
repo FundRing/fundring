@@ -19,7 +19,7 @@ jobs:
       - name: Make .env file
         uses: SpicyPizza/create-envfile@v2.0
         with:
-          envkey_PUBLIC_WEB3_STORAGE_KEY: ${{ ${{ secrets.PUBLIC_WEB3_STORAGE_KEY }} }}
+          envkey_PUBLIC_WEB3_STORAGE_KEY: ${{ secrets.PUBLIC_WEB3_STORAGE_KEY }}
           directory: .
           file_name: .env
           fail_on_empty: false
