@@ -39,14 +39,14 @@
     Fund Ring is a smart contract standard and set of ready-to-embed components, designed to simplify the process of receiving funding for your project in FIL.
     <br />
     <br />
-    <a href="https://github.com/FundRing/fundring/Best-README-Template"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/oddsdk/fundring#getting-started"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://fundring.fission.app">View Demo</a>
     ·
-    <a href="https://github.com/FundRing/fundring/issues">Report Bug</a>
+    <a href="https://github.com/oddsdk/fundring/issues">Report Bug</a>
     ·
-    <a href="https://github.com/FundRing/fundring/issues">Request Feature</a>
+    <a href="https://github.com/oddsdk/fundring/issues">Request Feature</a>
   </p>
 </div>
 
