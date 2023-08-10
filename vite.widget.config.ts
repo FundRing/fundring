@@ -18,7 +18,6 @@ export default defineConfig({
         format: 'iife',
         dir: resolve(__dirname, './widget'),
         entryFileNames: 'fund-ring-widget.js',
-        assetFileNames: 'global.css'
       }
     }
   },
@@ -26,7 +25,7 @@ export default defineConfig({
     svelte({
       preprocess: sveltePreprocess({}),
       exclude: '/.component.svelte$/',
-      emitCss: true
+      emitCss: false
     }),
     svelte({
       preprocess: sveltePreprocess(),
@@ -34,7 +33,7 @@ export default defineConfig({
       compilerOptions: {
         customElement: true
       },
-      emitCss: true
+      emitCss: false
     })
   ],
   resolve: {
