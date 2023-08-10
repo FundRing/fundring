@@ -1,9 +1,3 @@
-<script lang="ts">
-  import Discord from '$components/icons/Discord.svelte'
-  import ExternalLink from '$components/icons/ExternalLink.svelte'
-  import Github from '$components/icons/Github.svelte'
-</script>
-
 <div
   class="min-h-[calc(100vh-96px)] flex flex-col items-center justify-center max-w-[700px] m-auto gap-6 pb-5 text-sm"
 >
@@ -20,24 +14,17 @@
   <div class="flex items-center justify-between gap-6">
     <a
       class="flex items-center justify-center gap-2 font-bold text-sm text-base-content"
-      href="https://guide.fission.codes/"
+      href="https://github.com/oddsdk/fundring"
       target="_blank"
     >
-      Docs <ExternalLink />
-    </a>
-    <a
-      class="flex items-center justify-center gap-2 font-bold text-sm text-base-content"
-      href="https://github.com/oddsdk/"
-      target="_blank"
-    >
-      Github <Github />
+      Github
     </a>
     <a
       class="flex items-center justify-center gap-2 font-bold text-sm text-base-content"
       href="https://fission.codes/discord"
       target="_blank"
     >
-      Discord <Discord />
+      Discord
     </a>
   </div>
 </div>
