@@ -16,15 +16,8 @@ jobs:
           node-version: '16'
       - name: 📦 Install packages
         run: npm install
-      - name: Make .env file
-        uses: SpicyPizza/create-envfile@v2.0
-        with:
-          envkey_PUBLIC_WEB3_STORAGE_KEY: ${{ secrets.PUBLIC_WEB3_STORAGE_KEY }}
-          file_name: .env
-          fail_on_empty: true
-          sort_keys: false
       - name: 🏗 Build assets
-        run: npm run build
+        run: PUBLIC_WEB3_STORAGE_KEY=${{ secrets.PUBLIC_WEB3_STORAGE_KEY }} npm run build
       - name: 🚀 Publish to production
         uses: fission-suite/publish-action@v1
         with:

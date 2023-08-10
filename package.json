@@ -61,7 +61,6 @@
     "@web3modal/html": "^2.7.0",
     "clipboard-copy": "^4.0.1",
     "ethers": "^5.7.2",
-    "prismjs": "^1.29.0",
     "uint8arrays": "^4.0.2",
     "viem": "^1.4.2",
     "web3.storage": "^4.5.5"

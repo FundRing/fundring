@@ -10,7 +10,6 @@
   import clipboardCopy from 'clipboard-copy'
   import { onDestroy } from 'svelte'
   import { writable } from 'svelte/store'
-  import Prism from 'prismjs'
   import { parseEther } from 'viem'
   import { filecoinCalibration } from 'viem/chains'
   import { Web3Storage } from 'web3.storage'
@@ -364,29 +363,21 @@
 >
   <div slot="main">
     {#if deployedAddress}
-      {@const html = Prism.highlight(
-        `\n<script src="fund-ring-widget.js"><\/script>\n\n<fund-ring-widget\n  contractAddress="${deployedAddress}"\n  title="Help fund ${$projectDetails.name}!"\n  bodyCopy="A brief description"\n\/>`,
-        Prism.languages.javascript,
-        'javascript'
-      )}
+      {@const html = `\n<script src="fund-ring-widget.js"><\/script>\n\n<fund-ring-widget\n  contractAddress="${deployedAddress}"\n  title="Help fund ${$projectDetails.name}!"\n  bodyCopy="A brief description"\n\/>`}
       <pre
         class="p-2.5 mb-4 border border-odd-gray-500 bg-odd-yellow-100 text-body-sm overflow-x-scroll">
         <code class="language-html text-left">
-          {@html html}
+          {html}
         </code>
       </pre>
     {:else}
-      {@const html = Prism.highlight(
-        `\n<script src="fund-ring-widget.js"><\/script>\n\n<fund-ring-widget\n  contractAddress="<CONTRACT_ADDRESS>"\n  title="Help fund ${
-          $projectDetails.name ?? '<PROJECT_NAME>'
-        }!"\n  bodyCopy="A brief description"\n\/>`,
-        Prism.languages.javascript,
-        'javascript'
-      )}
+      {@const html = `\n<script src="fund-ring-widget.js"><\/script>\n\n<fund-ring-widget\n  contractAddress="<CONTRACT_ADDRESS>"\n  title="Help fund ${
+        $projectDetails.name ?? '<PROJECT_NAME>'
+      }!"\n  bodyCopy="A brief description"\n\/>`}
       <pre
         class="p-2.5 mb-4 border border-odd-gray-500 bg-odd-yellow-100 text-body-sm overflow-x-scroll">
         <code class="language-html text-left">
-          {@html html}
+          {html}
         </code>
       </pre>
     {/if}
