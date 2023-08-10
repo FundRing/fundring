@@ -17,7 +17,7 @@ jobs:
       - name: 📦 Install packages
         run: npm install
       - name: 🏗 Build assets
-        run: npm run build
+        run: PUBLIC_WEB3_STORAGE_KEY=${{ secrets.PUBLIC_WEB3_STORAGE_KEY }} npm run build
       - name: 🚀 Publish to production
         uses: fission-suite/publish-action@v1
         with:

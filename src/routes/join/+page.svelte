@@ -1,4 +1,6 @@
 <script lang="ts">
+  // @ts-ignore-next-line
+  import { PUBLIC_WEB3_STORAGE_KEY } from '$env/static/public'
   import {
     getNetwork,
     getWalletClient,
@@ -30,10 +32,9 @@
 
   // Create web3 storage client
   const web3StorageClient = new Web3Storage({
-    token:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGVBMTM1NkU5ZDQ1NDU0YTg0MzAwRDZiMzQ3MTFBNzcwNTk1OUE3ZjEiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2OTA3NDEyNTE1ODEsIm5hbWUiOiJGdW5kUmluZyJ9.9wsqAo9P573OV-V-lifmd2aHRm5eqog6kPRSAKAMDwE'
+    token: PUBLIC_WEB3_STORAGE_KEY
   })
-
+  console.log('PUBLIC_WEB3_STORAGE_KEY', PUBLIC_WEB3_STORAGE_KEY)
   // Create store to save project details
   const projectDetails = writable({
     name: null,

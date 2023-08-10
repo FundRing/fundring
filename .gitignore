@@ -15,3 +15,6 @@ build/
 
 # forge
 /cache/
+
+# env
+.env
