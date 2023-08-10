@@ -92,7 +92,7 @@ All you need is a git repo and a Filecoin wallet. Our wizard will guide you thro
     <img height="40" src="https://user-images.githubusercontent.com/25181517/183890598-19a0ac2d-e88a-4005-a8df-1ee36782fde1.png" alt="TypeScript" title="TypeScript"/>
   </a>
   <a href="https://walletconnect.com/">
-    <img height="40" src="https://raw.githubusercontent.com/WalletConnect/walletconnect-assets/master/Logo/Blue%20(Default)/Logo.svg" alt="WalletConnect" title="WalletConnect"/>
+    <img height="40" src="https://avatars.githubusercontent.com/u/37784886?s=200&v=4" alt="WalletConnect" title="WalletConnect"/>
   </a>
   <a href="https://book.getfoundry.sh/">
     <img height="40" src="static/foundry.png" alt="Foundry" title="Foundry"/>
