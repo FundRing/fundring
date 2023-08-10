@@ -8,6 +8,7 @@
   import clipboardCopy from 'clipboard-copy'
   import { onDestroy } from 'svelte'
   import { writable } from 'svelte/store'
+  import Prism from 'prismjs'
   import { parseEther } from 'viem'
   import { filecoinCalibration } from 'viem/chains'
   import { Web3Storage } from 'web3.storage'
@@ -18,11 +19,13 @@
   import { NETWORK_MAP, checkStatusOfPendingTX } from '$lib/contract'
   import { abi } from '$contracts/FundRingProject.sol/FundRingProject.json'
   import { CONTRACT_BYTECODE } from './lib/bytecode'
+  import FundRingWidget from '$components/FundRingWidget/FundRingWidget.svelte'
   import JoinForm from '$components/forms/Join.svelte'
   import IntroBlurb from './components/IntroBlurb.svelte'
   import Step from './components/Step.svelte'
 
   let currentStep = 1
+  let showWidgetPreview = false
   const loadingText = ['processing', 'sit tight', 'network speed may vary']
 
   // Create web3 storage client
@@ -104,8 +107,8 @@
     }
   }
 
-  // Copy fundring file with signed proof
-  const handleCopyFundringContents = async () => {
+  // Download `<project-slug>.fundring` file with signed proof
+  const handleDownloadFundringFile = async () => {
     const blob = new Blob([$projectDetails.signature], { type: 'octet/stream' })
     const fileURL = URL.createObjectURL(blob)
 
@@ -129,11 +132,7 @@
     )
     const blob = await response.blob()
     const text = await blob.text()
-    console.log(
-      '$projectDetails.signature.trim().toLowerCase()',
-      $projectDetails.signature.trim().toLowerCase()
-    )
-    console.log('text.trim().toLowerCase()', text.trim().toLowerCase())
+
     if (
       text.trim().toLowerCase() ===
       $projectDetails.signature.trim().toLowerCase()
@@ -161,7 +160,7 @@
 
     const interval = setInterval(() => {
       i == 2 ? (i = 0) : i++
-    }, 1200)
+    }, 1400)
 
     try {
       const { chain } = getNetwork()
@@ -226,6 +225,15 @@
         name: `${$projectDetails.slug}.json`,
         maxRetries: 5
       })
+
+      // let res = await $sessionStore.provider.getCode(deployedAddress)
+      // console.log('res', res)
+      // const timeout = setTimeout(async () => {
+      //   res = await $sessionStore.provider.getCode(deployedAddress)
+      //   console.log('res', res)
+      //   showWidgetPreview = true
+      //   clearTimeout(timeout)
+      // }, 7000)
     } catch (error) {
       console.error(error)
       addNotification('Deployment failed', 'error')
@@ -235,14 +243,26 @@
     clearInterval(interval)
   }
 
+  // Copy the fund ring widget instantiation code
+  const handleCopyFundringWidgetCode = async () => {
+    await clipboardCopy(
+      `<script src="fund-ring-widget.js"><\/script>\n<fund-ring-widget contractAddress="${deployedAddress}" title="Help fund ${$projectDetails.name}!" bodyCopy="A brief description" \/>`
+    )
+    addNotification('Copied to clipboard!', 'success')
+  }
+
+  // Download the fund ring widget web component
+  const handleDownloadFundringWidget = async () => {
+    const downloadLink = document.createElement('a')
+    downloadLink.href = `${window.location.origin}/fund-ring-widget.js`
+    downloadLink.download = 'fund-ring-widget.js'
+    downloadLink.click()
+  }
+
   onDestroy(() => {
     unsubscribeEvents()
   })
 </script>
-
-<!-- <svelte:head>
-  <script src={`${window.location.origin}/fund-ring-widget.js`}></script>
-</svelte:head> -->
 
 <h1 class="mb-12">Join the Ring</h1>
 
@@ -274,7 +294,7 @@
   buttonLabel={`Download ${
     $projectDetails.name ? $projectDetails.slug : '<project-slug>'
   }.fundring`}
-  buttonAction={handleCopyFundringContents}
+  buttonAction={handleDownloadFundringFile}
 />
 
 <!-- Verify Proof in Repo -->
@@ -312,11 +332,10 @@
   <div slot="main">
     {#if deployedAddress}
       <p class="mb-4">Contract deployed to:</p>
-      <div
-        class="min-h-[48px] mb-4 p-2.5 border border-odd-gray-500 bg-odd-yellow-100 text-body-sm break-words"
-      >
-        {deployedAddress}
-      </div>
+      <pre
+        class="prose prose-pre prose-code mb-4 p-2.5 border border-odd-gray-500 bg-odd-yellow-100 text-body-sm break-words">
+          {`\n\n${deployedAddress}\n`}
+      </pre>
     {/if}
   </div>
   <div slot="footer">
@@ -338,18 +357,57 @@
   {currentStep}
   step={6}
   title="Embed The Funding Widget"
-  body="Now that your contract is deployed, copy the code below to embed a funding widget directly into your project page."
-  html={`<div class="flex items-center justify-center h-[231px] mb-4 px-7 border border-odd-gray-500 bg-odd-yellow-100 break-words" ><p class="uppercase font-sans text-odd-blue-500 text-heading-xl text-center">Coming Soon</p></div>`}
+  body="Now that your contract is deployed, download the widget script and add it to your project then copy the code below to embed a funding widget directly into your project page."
   buttonLabel="Copy to Clipboard"
-  buttonDisabled={true}
+  buttonAction={handleCopyFundringWidgetCode}
 >
-  <!-- <div slot="main">
-    {#if currentStep === 6}
-      <fund-ring-widget contractAddress={deployedAddress} />
+  <div slot="main">
+    {#if deployedAddress}
+      {@const html = Prism.highlight(
+        `\n<script src="fund-ring-widget.js"><\/script>\n\n<fund-ring-widget\n  contractAddress="${deployedAddress}"\n  title="Help fund ${$projectDetails.name}!"\n  bodyCopy="A brief description"\n\/>`,
+        Prism.languages.javascript,
+        'javascript'
+      )}
+      <pre
+        class="p-2.5 mb-4 border border-odd-gray-500 bg-odd-yellow-100 text-body-sm overflow-x-scroll">
+        <code class="language-html text-left">
+          {@html html}
+        </code>
+      </pre>
+    {:else}
+      {@const html = Prism.highlight(
+        `\n<script src="fund-ring-widget.js"><\/script>\n\n<fund-ring-widget\n  contractAddress="<CONTRACT_ADDRESS>"\n  title="Help fund ${
+          $projectDetails.name ?? '<PROJECT_NAME>'
+        }!"\n  bodyCopy="A brief description"\n\/>`,
+        Prism.languages.javascript,
+        'javascript'
+      )}
+      <pre
+        class="p-2.5 mb-4 border border-odd-gray-500 bg-odd-yellow-100 text-body-sm overflow-x-scroll">
+        <code class="language-html text-left">
+          {@html html}
+        </code>
+      </pre>
     {/if}
-  </div> -->
-</Step>
+  </div>
+  <div slot="footer">
+    {#if currentStep === 6}
+      <button
+        class="btn btn-primary w-full mt-4 mb-4 text-odd-yellow-100"
+        on:click={handleDownloadFundringWidget}
+      >
+        Download widget script
+      </button>
 
-<!-- <fund-ring-widget
-  contractAddress="0x7fe03E3A5E9F7AfB8D2EC76EbEdEf4284e773578"
-/> -->
+      <!-- {#if showWidgetPreview}
+        <h3 class="mb-4 uppercase text-body-sm">Widget Preview</h3>
+
+        <FundRingWidget
+          contractAddress={deployedAddress}
+          title={`Help fund ${$projectDetails.name}!`}
+          bodyCopy="A brief description"
+        />
+      {/if} -->
+    {/if}
+  </div>
+</Step>
