@@ -195,9 +195,11 @@
     </button>
   </form>
 
-  <p
+  <a
     class="flex items-center justify-center gap-1 font-sans text-tag text-odd-green-500 text-center"
+    href="https://fundring.fission.app"
+    target="_blank"
   >
     Powered by <BrandLogoSmall /> Fund Ring
-  </p>
+  </a>
 </div>
