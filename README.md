@@ -219,7 +219,7 @@ Once you have your `fund-ring-widget.js` file, you can embed it in your app usin
 <fund-ring-widget
   contractAddress="<YOUR_DEPLOYED_FUND_RING_CONTRACT_ADDRESS>"
   title="A title for the widget"
-  bodyCopy="A brief description to display in the body"
+  description="A brief description to display in the body"
 />
 ```
 
