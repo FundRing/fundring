@@ -17,9 +17,12 @@ export default defineConfig({
       output: {
         format: 'iife',
         dir: resolve(__dirname, './widget'),
-        entryFileNames: 'fund-ring-widget.js',
+        entryFileNames: 'fund-ring-widget.js'
       }
     }
+  },
+  optimizeDeps: {
+    exclude: ['uint8arrays', 'clipboard-copy', 'web3.storage']
   },
   plugins: [
     svelte({

@@ -180,7 +180,8 @@ Ready? Let's go.
     ```sh
     npm install
     ```
-4. Start the application in dev mode
+4. Create `.env` file with `PUBLIC_WEB3_STORAGE_KEY="<YOUR_WEB3STORAGE_KEY>"`
+5. Start the application in dev mode
     ```js
     npm run dev
     ```
