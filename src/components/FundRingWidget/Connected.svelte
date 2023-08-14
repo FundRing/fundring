@@ -156,7 +156,7 @@
   </p>
 
   <div
-    class="relative h-4 mb-4 border border-odd-gray-500 rounded overflow-hidden"
+    class="fund-ring-progress-bar relative h-4 mb-4 border border-odd-gray-500 rounded overflow-hidden"
   >
     <div
       class="absolute left-0 top-0 bottom-0 z-0 h-4 bg-odd-gray-500"
