@@ -205,7 +205,7 @@ If you are making updates to the widget component and want to export it as an em
 npm run build:web-components
 ```
 
-The build outputs `fund-ring-widget.js` and `fund-ring-widget.js.amp` files to the `static` directory.
+The build outputs `fund-ring-widget.js` and `fund-ring-widget.js.map` files to the `static` directory.
 
 <p align="right">(<a href="#readme-top" class="text-green">back to top</a>)</p>
 
