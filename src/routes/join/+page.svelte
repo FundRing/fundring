@@ -246,7 +246,7 @@
   // Copy the fund ring widget instantiation code
   const handleCopyFundringWidgetCode = async () => {
     await clipboardCopy(
-      `<script src="fund-ring-widget.js"><\/script>\n\n<fund-ring-widget\n  contractAddress="${deployedAddress}"\n  title="Help fund ${$projectDetails.name}!"\n  bodyCopy="A brief description"\n\/>`
+      `<script src="fund-ring-widget.js"><\/script>\n\n<fund-ring-widget\n  contractAddress="${deployedAddress}"\n  title="Help fund ${$projectDetails.name}!"\n  description="A brief description"\n\/>`
     )
     addNotification('Copied to clipboard!', 'success')
   }
@@ -363,7 +363,7 @@
 >
   <div slot="main">
     {#if deployedAddress}
-      {@const html = `\n<script src="fund-ring-widget.js"><\/script>\n\n<fund-ring-widget\n  contractAddress="${deployedAddress}"\n  title="Help fund ${$projectDetails.name}!"\n  bodyCopy="A brief description"\n\/>`}
+      {@const html = `\n<script src="fund-ring-widget.js"><\/script>\n\n<fund-ring-widget\n  contractAddress="${deployedAddress}"\n  title="Help fund ${$projectDetails.name}!"\n  description="A brief description"\n\/>`}
       <pre
         class="p-2.5 mb-4 border border-odd-gray-500 bg-odd-yellow-100 text-body-sm overflow-x-scroll">
         <code class="language-html text-left">
@@ -373,7 +373,7 @@
     {:else}
       {@const html = `\n<script src="fund-ring-widget.js"><\/script>\n\n<fund-ring-widget\n  contractAddress="<CONTRACT_ADDRESS>"\n  title="Help fund ${
         $projectDetails.name ?? '<PROJECT_NAME>'
-      }!"\n  bodyCopy="A brief description"\n\/>`}
+      }!"\n  description="A brief description"\n\/>`}
       <pre
         class="p-2.5 mb-4 border border-odd-gray-500 bg-odd-yellow-100 text-body-sm overflow-x-scroll">
         <code class="language-html text-left">
@@ -398,7 +398,7 @@
         <FundRingWidget
           contractAddress={deployedAddress}
           title={`Help fund ${$projectDetails.name}!`}
-          bodyCopy="A brief description"
+          description="A brief description"
         />
       {/if} -->
     {/if}

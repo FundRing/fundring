@@ -17,7 +17,7 @@
 
   export let contractAddress: string = null
   export let title: string = 'Help fund us!'
-  export let bodyCopy: string =
+  export let description: string =
     'If you rely upon Fund Ring’s efforts to keep your project going, please consider supporting our funding goal. Every little bit helps.'
 
   const contract = new ethers.Contract(
@@ -143,7 +143,7 @@
 >
   <h2 class="mb-2">{title}</h2>
   <p class="mb-8 text-body-sm">
-    {bodyCopy}
+    {description}
   </p>
 
   <h3 class="mb-1">How much can you help?</h3>

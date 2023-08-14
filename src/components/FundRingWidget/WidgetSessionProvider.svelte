@@ -17,7 +17,7 @@
 
   export let contractAddress: string = null
   export let title: string = null
-  export let bodyCopy: string = null
+  export let description: string = null
 
   const chains = [filecoin, filecoinCalibration]
   const projectId = 'c7a37f5b7c8aa244bc4573f1d633cb60'
@@ -60,6 +60,6 @@
   {#if loading}
     <FullScreenLoadingSpinner />
   {:else}
-    <FundRingWidget {contractAddress} {bodyCopy} {title} />
+    <FundRingWidget {contractAddress} {description} {title} />
   {/if}
 </div>

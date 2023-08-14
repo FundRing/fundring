@@ -7,7 +7,7 @@
 
   export let contractAddress: string = null
   export let title: string = 'Help fund us!'
-  export let bodyCopy: string =
+  export let description: string =
     'If you rely upon Fund Ring’s efforts to keep your project going, please consider supporting our funding goal. Every little bit helps.'
 
   let connected = $sessionStore.ethereumClient.getAccount().isConnected
@@ -32,8 +32,8 @@
 
 <div class="fund-ring-widget-wrapper">
   {#if connected && contractAddress}
-    <Connected {contractAddress} {title} {bodyCopy} />
+    <Connected {contractAddress} {title} {description} />
   {:else}
-    <Disconnected {title} {bodyCopy} />
+    <Disconnected {title} {description} />
   {/if}
 </div>
