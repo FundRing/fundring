@@ -40,6 +40,7 @@
 }
 
 #fund-ring-app .fund-ring-widget-wrapper > div.border-odd-gray-500 {
+  @apply box-border rounded;
   border: 1px solid #313245;
 }
 
