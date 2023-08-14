@@ -159,6 +159,8 @@ Ready? Let's go.
 
     -   [MetaMask](https://metamask.io/) may be a good/easy choice if you don't already have a wallet client
 
+-   [Add the Filecoin Calibration Testnet to your wallet client](https://chainlist.org/chain/314159)
+-   [Obtain some tFIL for the Calibration Testnet](https://faucet.calibration.fildev.network/funds.html)
 -   Get a WalletConnect ProjectID at [https://cloud.walletconnect.com/sign-up](https://cloud.walletconnect.com/sign-up)
 -   Get a Web3.Storage key at [https://web3.storage/login/](https://web3.storage/login/)
 
