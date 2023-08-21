@@ -26,9 +26,9 @@ export default defineConfig({
   },
   plugins: [
     svelte({
-      preprocess: sveltePreprocess({}),
+      preprocess: sveltePreprocess(),
       exclude: '/.component.svelte$/',
-      emitCss: false
+      emitCss: false,
     }),
     svelte({
       preprocess: sveltePreprocess(),
