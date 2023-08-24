@@ -10,10 +10,12 @@ export const CONTRACT_ADDRESS = '0xA22D57E6be1aE643F00D048C26cA5d5e3E7E0354'
 export const NETWORK_MAP = {
   mainnet: {
     chainId: '314',
+    chainIdHex: '0x13a',
     wsProvider: 'wss://wss.node.glif.io/apigw/lotus/rpc/v1'
   },
   testnet: {
     chainId: '314159',
+    chainIdHex: '0x4cb2f',
     contractAddress: CONTRACT_ADDRESS,
     wsProvider: 'wss://wss.calibration.node.glif.io/apigw/lotus/rpc/v0'
   }
