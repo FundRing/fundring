@@ -6,6 +6,8 @@
   import { addNotification } from '$lib/notifications'
 
   export let snap = null
+  export let snapConnected = null
+  export let walletConnected = null
   export let title: string = 'Help fund us!'
   export let description: string =
     'If you rely upon Fund Ring’s efforts to keep your project going, please consider supporting our funding goal. Every little bit helps.'
@@ -32,10 +34,13 @@
           { network: 'testnet' },
           'npm:filsnap'
         )
+        snapConnected = true
         addNotification('Filsnap connected successfully', 'success')
       }
 
       await window.ethereum.request({ method: 'eth_requestAccounts' })
+      walletConnected = true
+      addNotification('Wallet client connected successfully', 'success')
     } catch (error) {
       console.error(error)
       addNotification('Could not connect your Filsnap wallet client', 'error')

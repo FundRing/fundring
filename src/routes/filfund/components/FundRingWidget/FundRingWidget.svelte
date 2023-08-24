@@ -10,9 +10,9 @@
   export let description: string =
     'If you rely upon Fund Ring’s efforts to keep your project going, please consider supporting our funding goal. Every little bit helps.'
 
-  let snapConnected = false
-  let walletConnected = false
-  let snap = null
+  $: snapConnected = false
+  $: walletConnected = false
+  $: snap = null
 
   onMount(async () => {
     snapConnected = await Filsnap.FilsnapAdapter.isConnected()
@@ -26,8 +26,8 @@
   })
 
   onDestroy(async () => {
-    window.ethereum.off('accountsChanged', () => {
-      walletConnected = false
+    window.ethereum.off('accountsChanged', accounts => {
+      walletConnected = !!(accounts as string[]).length
     })
   })
 </script>
@@ -36,6 +36,12 @@
   {#if snapConnected && contractAddress && walletConnected}
     <Connected {contractAddress} {title} {description} bind:snap />
   {:else}
-    <Disconnected {title} {description} bind:snap bind:walletConnected />
+    <Disconnected
+      {title}
+      {description}
+      bind:snap
+      bind:snapConnected
+      bind:walletConnected
+    />
   {/if}
 </div>
