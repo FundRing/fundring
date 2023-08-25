@@ -1,5 +1,5 @@
 <script lang="ts">
-  import * as Filsnap from 'filsnap-adapter'
+  import { FilsnapAdapter } from 'filsnap-adapter'
   import { onDestroy, onMount } from 'svelte'
 
   import Connected from '$routes/filfund/components/FundRingWidget/Connected.svelte'
@@ -15,7 +15,7 @@
   $: snap = null
 
   onMount(async () => {
-    snapConnected = await Filsnap.FilsnapAdapter.isConnected()
+    snapConnected = await FilsnapAdapter.isConnected()
 
     const mmAccounts = await window.ethereum.request({ method: 'eth_accounts' })
     walletConnected = !!(mmAccounts as string[]).length

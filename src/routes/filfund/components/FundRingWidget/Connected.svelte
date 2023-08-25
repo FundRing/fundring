@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ethers } from 'ethers'
-  import * as Filsnap from 'filsnap-adapter'
+  import { FilsnapAdapter } from 'filsnap-adapter'
   import { onDestroy, onMount } from 'svelte'
   import { parseEther } from 'viem'
 
@@ -97,10 +97,7 @@
   onMount(async () => {
     fetchingData = true
 
-    snap = await Filsnap.FilsnapAdapter.connect(
-      { network: 'testnet' },
-      'npm:filsnap'
-    )
+    snap = await FilsnapAdapter.connect({ network: 'testnet' }, 'npm:filsnap')
     const accounts = await window.ethereum.request({
       method: 'eth_requestAccounts'
     })

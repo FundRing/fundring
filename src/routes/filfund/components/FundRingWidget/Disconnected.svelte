@@ -1,5 +1,5 @@
 <script lang="ts">
-  import * as Filsnap from 'filsnap-adapter'
+  import { FilsnapAdapter } from 'filsnap-adapter'
   import { onMount } from 'svelte'
 
   import BrandLogoSmall from '$components/icons/BrandLogoSmall.svelte'
@@ -15,7 +15,7 @@
   let loading = false
 
   const checkIfFlaskIsInstalled = async () => {
-    const hasFlask = await Filsnap.FilsnapAdapter.hasFlask()
+    const hasFlask = await FilsnapAdapter.hasFlask()
     if (!hasFlask) {
       addNotification('Flask not installed', 'error')
       throw new Error('Flask not installed')
@@ -28,9 +28,9 @@
     try {
       await checkIfFlaskIsInstalled()
 
-      const isSnapConnected = await Filsnap.FilsnapAdapter.isConnected()
+      const isSnapConnected = await FilsnapAdapter.isConnected()
       if (!isSnapConnected) {
-        snap = await Filsnap.FilsnapAdapter.connect(
+        snap = await FilsnapAdapter.connect(
           { network: 'testnet' },
           'npm:filsnap'
         )
