@@ -1,54 +1,50 @@
 <script lang="ts">
-  import { ethers } from 'ethers'
+  import { utils } from 'ethers'
   import { FilsnapAdapter } from 'filsnap-adapter'
-  import { onDestroy, onMount } from 'svelte'
-  import { parseEther } from 'viem'
+  import { RPC } from 'iso-filecoin/rpc'
+  import { Token } from 'iso-filecoin/token'
+  import { onMount } from 'svelte'
 
   import BrandLogoSmall from '$components/icons/BrandLogoSmall.svelte'
-  import { abi } from '$contracts/FundRingProject.sol/FundRingProject.json'
   import { addNotification } from '$lib/notifications'
-  import { NETWORK_MAP, checkStatusOfPendingTX } from '$lib/contract'
+  import { NETWORK_MAP } from '$lib/contract'
 
   export let snap = null
-  export let contractAddress: string = null
   export let title: string = 'Help fund us!'
   export let description: string =
     'If you rely upon Fund Ring’s efforts to keep your project going, please consider supporting our funding goal. Every little bit helps.'
 
-  let contract = null
+  let fetchingData = false
   let loading = false
-  let fetchingData = true
-  let fundingFrequency = null
-  let fundingGoal = 0
   let totalFundsRaised = 0
-  const loadingText = ['processing', 'sit tight', 'network speed may vary']
 
-  const FREQUENCY_MAP = {
-    'one-time': '',
-    monthly: ' month',
-    annually: ' year'
-  }
+  const FUNDRING_CONTRACT_OWNER_ADDRESS =
+    't410ftgo7vbcywlxf72blsnr4tgmpvcxrs6icg34pouq'
+  const LOADING_TEXT = ['processing', 'sit tight', 'network speed may vary']
+  const RPC_ENDPOINT = 'https://api.calibration.node.glif.io/rpc/v1'
 
-  // Get the total funds raised based on the frequency set for the contract
-  const getTotalFundsRaisedByFrequency = async () => {
-    let totalFundsRaisedRaw: string
-    if (fundingFrequency === 'monthly') {
-      totalFundsRaisedRaw = await contract.getFundsRaisedByMonth(
-        new Date(Date.now())
-          .toLocaleString('en-US', { month: 'long' })
-          .toLowerCase()
+  const rpc = new RPC({
+    api: RPC_ENDPOINT,
+    network: 'testnet'
+  })
+
+  // Get the total funds sent to the FundRing wallet so far
+  const getTotalFundsRaised = async () => {
+    fetchingData = true
+    try {
+      const balance = await rpc.balance(FUNDRING_CONTRACT_OWNER_ADDRESS)
+
+      totalFundsRaised = Number(
+        Number(utils.formatEther(balance.result)).toFixed(2)
       )
-    } else if (fundingFrequency === 'annually') {
-      totalFundsRaisedRaw = await contract.getFundsRaisedByYear(
-        new Date().getFullYear()
-      )
-    } else {
-      totalFundsRaisedRaw = await contract.getTotalFundsRaised()
+    } catch (error) {
+      console.error(error)
+      addNotification('Failed to fetch balance', 'error')
     }
-    totalFundsRaised = Number(ethers.utils.formatEther(totalFundsRaisedRaw))
+    fetchingData = false
   }
 
-  // Submit the users FIL contribution to the Fund Ring contract
+  // Submit the users FIL contribution to the Fund Ring wallet
   let i = 0
   const handleContributeSubmit = async (event: SubmitEvent) => {
     loading = true
@@ -77,13 +73,22 @@
         }
       }
 
-      const { hash } = await contract.contributeFunds({
-        value: parseEther(contributionAmount)
+      const signedMessage = await snap.signMessage({
+        to: FUNDRING_CONTRACT_OWNER_ADDRESS,
+        value: Token.fromFIL(contributionAmount).toAttoFIL().toString()
       })
 
-      await checkStatusOfPendingTX(hash)
+      const send = await snap.sendMessage(signedMessage.result)
 
-      await getTotalFundsRaisedByFrequency()
+      const txComplete = await rpc.call('Filecoin.MpoolPending', [
+        {
+          '/': send.result.cid
+        }
+      ])
+
+      console.log('txComplete', txComplete)
+
+      await getTotalFundsRaised()
 
       loading = false
     } catch (error) {
@@ -96,45 +101,18 @@
 
   onMount(async () => {
     fetchingData = true
+    loading = true
 
-    snap = await FilsnapAdapter.connect({ network: 'testnet' }, 'npm:filsnap')
-    const accounts = await window.ethereum.request({
-      method: 'eth_requestAccounts'
-    })
+    snap = await FilsnapAdapter.connect(
+      { network: 'testnet' },
+      'npm:filsnap',
+      '*'
+    )
 
-    const provider = new ethers.providers.Web3Provider(window.ethereum as any)
-
-    const signer = provider.getSigner(accounts[0])
-
-    contract = new ethers.Contract(contractAddress, abi, signer)
-
-    fundingFrequency = await contract.getFundingFrequency()
-    await getTotalFundsRaisedByFrequency()
-    const fundingGoalRaw = await contract.fundingGoal()
-    fundingGoal = Number(ethers.utils.formatEther(fundingGoalRaw))
+    await getTotalFundsRaised()
 
     fetchingData = false
-
-    // Listen for contribution events on contract and update amounts if there is network latency
-    contract.on('FundRingFundsContributed', (_p1, _p2, _totalFundsRaised) => {
-      if (
-        Number(ethers.utils.formatEther(_totalFundsRaised)) > totalFundsRaised
-      ) {
-        fetchingData = true
-        loading = true
-        totalFundsRaised = Number(ethers.utils.formatEther(_totalFundsRaised))
-        addNotification('Contribution successful!', 'success')
-        loading = false
-        fetchingData = false
-      }
-    })
-  })
-
-  onDestroy(async () => {
-    // Stop listening for events on contract
-    if (contract) {
-      contract.off('FundRingFundsContributed')
-    }
+    loading = false
   })
 </script>
 
@@ -148,21 +126,10 @@
 
   <h3 class="mb-1">How much can you help?</h3>
   <p class="mb-4 text-body-sm">
-    Our goal this{FREQUENCY_MAP[fundingFrequency]} is {#if fetchingData}<div
+    We have received {#if fetchingData}<div
         class="inline-block w-5 h-4 ml-1 translate-y-[2px] bg-odd-gray-100 rounded-sm animate-pulse"
-      />{:else}{fundingGoal}{/if}FIL. We need another {#if fetchingData}<div
-        class="inline-block w-5 h-4 ml-1 translate-y-[2px] bg-odd-gray-100 rounded-sm animate-pulse"
-      />{:else}{fundingGoal - totalFundsRaised}{/if}FIL to hit it.
+      />{:else}{totalFundsRaised}{/if}FIL so far.
   </p>
-
-  <div
-    class="fund-ring-progress-bar relative h-4 mb-4 border border-odd-gray-500 rounded overflow-hidden"
-  >
-    <div
-      class="absolute left-0 top-0 bottom-0 z-0 h-4 bg-odd-gray-500"
-      style={`width: ${(totalFundsRaised / fundingGoal) * 100}%;`}
-    />
-  </div>
 
   <form on:submit|preventDefault={handleContributeSubmit} class="mb-7">
     <div class="relative mb-4">
@@ -188,7 +155,7 @@
     >
       {#if loading}
         <span class="loading loading-spinner" />
-        {loadingText[i]}
+        {LOADING_TEXT[i]}
       {:else}
         Contribute FIL
       {/if}

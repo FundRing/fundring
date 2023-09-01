@@ -32,7 +32,8 @@
       if (!isSnapConnected) {
         snap = await FilsnapAdapter.connect(
           { network: 'testnet' },
-          'npm:filsnap'
+          'npm:filsnap',
+          '*'
         )
         snapConnected = true
         addNotification('Filsnap connected successfully', 'success')
