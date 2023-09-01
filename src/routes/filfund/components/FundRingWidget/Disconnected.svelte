@@ -67,10 +67,11 @@
 
   <button
     on:click={handleConnect}
-    class="btn h-[54px] w-full mb-7 bg-odd-gray-500 hover:bg-odd-gray-400 text-odd-yellow-100 !border-0"
+    disabled={loading}
+    class="btn form-btn h-[54px] w-full mb-7 bg-odd-gray-500 hover:bg-odd-gray-400 text-odd-yellow-100 !border-0"
   >
     {#if loading}
-      <span class="loading loading-spinner text-primary" />
+      <span class="loading loading-spinner" />
       processing
     {:else}
       Connect Your Wallet to Continue

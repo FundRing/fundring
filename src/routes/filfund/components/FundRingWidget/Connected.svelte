@@ -80,17 +80,16 @@
 
       const send = await snap.sendMessage(signedMessage.result)
 
-      const txComplete = await rpc.call('Filecoin.MpoolPending', [
-        {
-          '/': send.result.cid
-        }
-      ])
-
-      console.log('txComplete', txComplete)
+      // Wait for tx to process
+      await rpc.stateWaitMsg({
+        '/': send.result.cid
+      })
 
       await getTotalFundsRaised()
 
       loading = false
+
+      addNotification('Contribution successful!', 'success')
     } catch (error) {
       console.error(error)
       addNotification('Transaction failed', 'error')
