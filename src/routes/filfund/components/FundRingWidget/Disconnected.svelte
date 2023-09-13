@@ -13,12 +13,13 @@
     'If you rely upon Fund Ring’s efforts to keep your project going, please consider supporting our funding goal. Every little bit helps.'
 
   let loading = false
-
+  const SNAP_ERROR_MESSAGE =
+    'Metamask does not support snaps. Please update to the latest version'
   const checkIfFlaskIsInstalled = async () => {
-    const hasFlask = await FilsnapAdapter.hasFlask()
+    const hasFlask = await FilsnapAdapter.hasSnaps()
     if (!hasFlask) {
-      addNotification('Flask not installed', 'error')
-      throw new Error('Flask not installed')
+      addNotification(SNAP_ERROR_MESSAGE, 'error')
+      throw new Error(SNAP_ERROR_MESSAGE)
     }
   }
 
@@ -28,23 +29,22 @@
     try {
       await checkIfFlaskIsInstalled()
 
-      const isSnapConnected = await FilsnapAdapter.isConnected()
+      const isSnapConnected = await FilsnapAdapter.isAvailable()
       if (!isSnapConnected) {
         snap = await FilsnapAdapter.connect(
           { network: 'testnet' },
           'npm:filsnap',
-          '*'
+          '>=0.5.0'
         )
         snapConnected = true
-        addNotification('Filsnap connected successfully', 'success')
       }
 
       await window.ethereum.request({ method: 'eth_requestAccounts' })
       walletConnected = true
-      addNotification('Wallet client connected successfully', 'success')
+      addNotification('Filecoin Wallet connected successfully', 'success')
     } catch (error) {
       console.error(error)
-      addNotification('Could not connect your Filsnap wallet client', 'error')
+      addNotification('Could not connect your Filecoin Wallet', 'error')
     }
 
     loading = false

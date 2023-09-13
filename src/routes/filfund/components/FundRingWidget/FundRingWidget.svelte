@@ -14,7 +14,7 @@
   $: snap = null
 
   onMount(async () => {
-    snapConnected = await FilsnapAdapter.isConnected()
+    snapConnected = await FilsnapAdapter.isAvailable()
 
     const mmAccounts = await window.ethereum.request({ method: 'eth_accounts' })
     walletConnected = !!(mmAccounts as string[]).length

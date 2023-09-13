@@ -17,16 +17,11 @@
   let fetchingData = false
   let loading = false
   let totalFundsRaised = 0
+  let rpc: RPC
 
   const FUNDRING_CONTRACT_OWNER_ADDRESS =
     't410ftgo7vbcywlxf72blsnr4tgmpvcxrs6icg34pouq'
   const LOADING_TEXT = ['processing', 'sit tight', 'network speed may vary']
-  const RPC_ENDPOINT = 'https://api.calibration.node.glif.io/rpc/v1'
-
-  const rpc = new RPC({
-    api: RPC_ENDPOINT,
-    network: 'testnet'
-  })
 
   // Get the total funds sent to the FundRing wallet so far
   const getTotalFundsRaised = async () => {
@@ -81,8 +76,10 @@
       const send = await snap.sendMessage(signedMessage.result)
 
       // Wait for tx to process
-      await rpc.stateWaitMsg({
-        '/': send.result.cid
+      await rpc.waitMsg({
+        cid: {
+          '/': send.result.cid
+        }
       })
 
       await getTotalFundsRaised()
@@ -102,11 +99,16 @@
     fetchingData = true
     loading = true
 
-    snap = await FilsnapAdapter.connect(
-      { network: 'testnet' },
-      'npm:filsnap',
-      '*'
-    )
+    snap =
+      snap ??
+      (await FilsnapAdapter.connect(
+        { network: 'testnet' },
+        'npm:filsnap',
+        '>=0.5.0'
+      ))
+
+    // Get RPC from adapter
+    rpc = snap.rpc()
 
     await getTotalFundsRaised()
 
