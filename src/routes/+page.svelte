@@ -35,6 +35,10 @@
 <a href="/fund" class="btn btn-outline btn-primary w-full mb-4">
   Fund the Ring
 </a>
+
+<a href="/filfund" class="btn btn-outline btn-primary w-full mb-4">
+  Fund the Ring with Native FIL
+</a>
 <!-- <a href="/join" class="btn btn-outline btn-primary w-full mb-4">
   Who’s using Fund Ring?
 </a> -->
